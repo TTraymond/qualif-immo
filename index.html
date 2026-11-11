@@ -1,0 +1,2084 @@
+<!-- ... existing code ... -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Qualif'Immo Nov. 2026 — Solvabilité HCSF & Veille Agence</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --brand-primary: #1e40af;
+            --brand-secondary: #1d4ed8;
+            --brand-light: #eff6ff;
+            --brand-border: #bfdbfe;
+            --brand-accent: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Dynamic Brand Classes */
+        .bg-brand { background-color: var(--brand-primary); }
+        .bg-brand-secondary { background-color: var(--brand-secondary); }
+        .bg-brand-light { background-color: var(--brand-light); }
+        .text-brand { color: var(--brand-primary); }
+        .border-brand { border-color: var(--brand-primary); }
+        .border-brand-light { border-color: var(--brand-border); }
+
+        /* Touch-friendly Custom Range Slider for Mobile Portrait */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #cbd5e1;
+            border-radius: 999px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            cursor: pointer;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.28);
+            transition: transform 0.12s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.2);
+        }
+
+        /* Hide scrollbars on horizontal pill containers */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Print adjustments */
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: #ffffff; padding-bottom: 0 !important; }
+            .print-shadow-none { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-20 md:pb-6">
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed top-4 right-4 left-4 sm:left-auto z-50 hidden transform transition-all duration-300 -translate-y-2 opacity-0">
+        <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 border border-slate-700 max-w-md ml-auto">
+            <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg shrink-0"></i>
+            <span id="toast-message" class="text-xs sm:text-sm font-medium leading-snug">Action effectuée avec succès</span>
+        </div>
+    </div>
+
+    <!-- TOP HEADER BAR -->
+    <header class="bg-brand text-white shadow-md z-30 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-3">
+            <div class="flex items-center justify-between gap-2">
+                <!-- Brand & Agency Info -->
+                <div class="flex items-center space-x-3 min-w-0">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/25 shadow-inner shrink-0">
+                        <i class="fa-solid fa-building-shield text-lg sm:text-xl text-white"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center flex-wrap gap-1.5">
+                            <h1 class="text-base sm:text-xl font-extrabold tracking-tight truncate">Qualif'Immo 2026</h1>
+                            <span class="text-[10px] sm:text-xs uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 font-bold backdrop-blur-sm truncate max-w-[170px] sm:max-w-none" id="header-agency-badge">
+                                Agence Partenaire
+                            </span>
+                        </div>
+                        <p class="text-[11px] sm:text-xs text-white/85 font-medium truncate">
+                            Solvabilité HCSF &amp; Veille • <span class="font-bold text-amber-300">Barèmes Novembre 2026</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div class="flex items-center gap-1.5 shrink-0 no-print">
+                    <button onclick="toggleWhiteLabelMode()" id="header-whitelabel-btn" title="Basculer entre le Mode Pitch Directeur (Signature M. Nguon visible) et le Mode Client Acquéreur (Marque Blanche)" class="px-2.5 sm:px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold transition flex items-center space-x-1.5 border border-white/20">
+                        <i id="header-whitelabel-icon" class="fa-solid fa-user-tie text-amber-300"></i>
+                        <span id="header-whitelabel-text" class="hidden lg:inline">Mode Pitch Tuteur</span>
+                    </button>
+                    <button onclick="switchTab('pitch')" class="px-2.5 sm:px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition flex items-center space-x-1.5 shadow-sm">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span class="hidden sm:inline">Personnaliser Agence</span>
+                        <span class="sm:hidden">Agence</span>
+                    </button>
+                    <button onclick="resetDefaultCase()" title="Réinitialiser le cas de démo" class="w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 text-xs transition border border-white/20 flex items-center justify-center">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- DESKTOP & TABLET TOP NAVIGATION TABS -->
+            <nav class="hidden md:flex items-center space-x-2 mt-3 pt-2.5 border-t border-white/15 no-print">
+                <button onclick="switchTab('sim')" id="desk-tab-sim" class="px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider transition flex items-center space-x-2 bg-white text-slate-900 shadow-sm">
+                    <i class="fa-solid fa-calculator text-brand"></i>
+                    <span>1. Simulateur HCSF &amp; Sauvetage</span>
+                </button>
+                <button onclick="switchTab('news')" id="desk-tab-news" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition flex items-center space-x-2 text-white/90 hover:bg-white/15">
+                    <i class="fa-solid fa-newspaper text-amber-300"></i>
+                    <span>2. Actus &amp; Barèmes Nov. 2026</span>
+                    <span class="px-1.5 py-0.5 text-[10px] rounded-full bg-amber-400 text-slate-950 font-black">NOUVEAU</span>
+                </button>
+                <button onclick="switchTab('pitch')" id="desk-tab-pitch" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition flex items-center space-x-2 text-white/90 hover:bg-white/15">
+                    <i class="fa-solid fa-graduation-cap text-emerald-300"></i>
+                    <span>3. Mode Démo Agence &amp; Pitch Élève</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MOBILE STICKY LIVE VERDICT BAR (Portrait Ergonomics: Always visible when scrolling inputs!) -->
+    <div id="mobile-sticky-verdict" class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md text-white border-b border-slate-700 px-3.5 py-2.5 shadow-lg md:hidden transition-all duration-200 no-print">
+        <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2.5 min-w-0">
+                <div id="mob-verdict-dot" class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center text-sm font-bold shrink-0 shadow">
+                    <i id="mob-verdict-icon" class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center space-x-1.5">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">HCSF:</span>
+                        <span id="mob-debt-ratio" class="text-sm font-black text-amber-400">36.3%</span>
+                        <span class="text-slate-600">•</span>
+                        <span id="mob-monthly" class="text-xs font-extrabold text-white">1 361 €/m</span>
+                    </div>
+                    <p id="mob-verdict-label" class="text-[10px] text-slate-300 truncate">Dossier tendu • Activez Lemoine ↓</p>
+                </div>
+            </div>
+            <!-- Quick Rescue Toggle right in the sticky bar for 1-thumb mobile demo -->
+            <button onclick="quickToggleLemoineMobile()" id="mob-lemoine-btn" class="px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-600 text-[11px] font-extrabold text-emerald-400 flex items-center space-x-1 shrink-0 active:scale-95 transition">
+                <i class="fa-solid fa-bolt"></i>
+                <span id="mob-lemoine-btn-text">Lemoine: OFF</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6 flex-1 w-full">
+
+        <!-- PLACEMENT 1: STRATEGIC TEACHER SIGNATURE & DEMO BANNER (Screen only, .no-print, hidden in White-Label Mode) -->
+        <div id="student-pitch-banner" class="mb-4 sm:mb-6 bg-gradient-to-r from-amber-50 via-white to-amber-50/70 border border-amber-300/90 rounded-2xl p-3.5 sm:p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm no-print">
+            <div class="flex items-start sm:items-center space-x-3">
+                <span class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold shrink-0 shadow-sm mt-0.5 sm:mt-0">
+                    <i class="fa-solid fa-graduation-cap text-base"></i>
+                </span>
+                <div>
+                    <div class="flex items-center flex-wrap gap-1.5">
+                        <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-200/80 text-amber-950">
+                            Innovation Pédagogique Bac Pro MCV
+                        </span>
+                        <span class="text-xs font-extrabold text-slate-900" id="student-banner-title">
+                            Outil configuré pour votre agence immobilière
+                        </span>
+                    </div>
+                    <p class="text-[11px] sm:text-xs text-slate-700 mt-1 leading-snug">
+                        Outil pédagogique d'aide à la vente développé sous la direction de <strong class="text-slate-950 font-extrabold">M. NGUON, enseignant pro en éco-gestion au Lycée Georges Brassens de Villepinte</strong> <span class="text-slate-500">(Ex-Directeur d'agence bancaire &amp; Courtier)</span>.
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 self-end md:self-center shrink-0">
+                <span class="text-[11px] font-extrabold px-3 py-1.5 rounded-xl bg-amber-100 border border-amber-300 text-amber-950" id="student-banner-badge">
+                    Démo Stage PFMP
+                </span>
+                <button onclick="toggleWhiteLabelMode()" title="Masquer la signature Lycée pour utiliser l'outil devant un client acheteur" class="text-[11px] font-semibold px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition">
+                    <i class="fa-solid fa-eye-slash mr-1"></i> Mode Client
+                </button>
+            </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- TAB 1: SIMULATEUR HCSF & LEVIERS DE SAUVETAGE                       -->
+        <!-- =================================================================== -->
+        <div id="tab-content-sim" class="space-y-5 sm:space-y-6">
+
+            <!-- BARÈME NOVEMBRE 2026 QUICK SELECTOR BAR -->
+            <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/90 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-3 no-print">
+                <div class="flex items-center space-x-2.5">
+                    <span class="w-8 h-8 rounded-lg bg-brand-light text-brand flex items-center justify-center font-bold text-sm shrink-0">
+                        <i class="fa-solid fa-percent"></i>
+                    </span>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Grille de Taux Novembre 2026</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800">OAT 10 ans : 5,13%</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500">Sélectionnez le barème ou appliquez la segmentation bancaire selon les revenus annuels du foyer.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1.5">
+                    <button type="button" onclick="applyRatePreset('negocie')" id="preset-negocie" class="px-3 py-2 rounded-xl text-[11px] font-extrabold border bg-brand text-white border-brand transition">
+                        Négocié (25a: 3,70%)
+                    </button>
+                    <button type="button" onclick="applyRatePreset('standard')" id="preset-standard" class="px-3 py-2 rounded-xl text-[11px] font-bold border bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 transition">
+                        Standard (25a: 3,90%)
+                    </button>
+                    <button type="button" onclick="applyRatePreset('excellent')" id="preset-excellent" class="px-3 py-2 rounded-xl text-[11px] font-bold border bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 transition">
+                        Top 10% (25a: 3,47%)
+                    </button>
+                    <button type="button" onclick="applyRatePreset('auto_revenus')" id="preset-auto_revenus" class="px-3 py-2 rounded-xl text-[11px] font-bold border bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-wand-sparkles text-amber-600"></i> Selon Revenus
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
+
+                <!-- LEFT COLUMN: INPUT PARAMETERS (5 cols on Desktop) -->
+                <div class="lg:col-span-5 space-y-5">
+
+                    <!-- SECTION 1: PROFIL ACQUÉREUR -->
+                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 sm:p-6 print-shadow-none">
+                        <div class="flex items-center justify-between mb-4 pb-2.5 border-b border-slate-100">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-7 h-7 rounded-lg bg-brand-light text-brand flex items-center justify-center">
+                                    <i class="fa-solid fa-user-check text-xs"></i>
+                                </div>
+                                <h2 class="text-sm sm:text-base font-extrabold text-slate-800">1. Profil &amp; Revenus du Foyer</h2>
+                            </div>
+                            <span id="income-bracket-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">Revenus : 45 000 €/an</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Revenus nets mensuels -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <label class="text-xs font-bold text-slate-700">Revenus nets mensuels (avant impôt)</label>
+                                    <div class="flex items-center bg-slate-100 rounded-xl px-2.5 py-1.5 border border-slate-200">
+                                        <input type="number" id="input-income" value="3750" min="1000" max="30000" step="50"
+                                            oninput="syncInputs('income', this.value)"
+                                            class="w-20 text-right font-extrabold text-sm bg-transparent focus:outline-none text-slate-900">
+                                        <span class="text-xs font-bold text-slate-500 ml-1">€/m</span>
+                                    </div>
+                                </div>
+                                <input type="range" id="slider-income" min="1500" max="12000" step="50" value="3750"
+                                    oninput="syncInputs('income', this.value)">
+                                <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                                    <span>1 500 €</span>
+                                    <span>3 750 €</span>
+                                    <span>7 000 €</span>
+                                    <span>12 000 €+</span>
+                                </div>
+                            </div>
+
+                            <!-- Statut Professionnel -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Statut professionnel &amp; Ciblage Bancaire</label>
+                                <select id="input-status" onchange="calculateAll()"
+                                    class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-brand">
+                                    <option value="cdi">CDI confirmé / Fonctionnaire (Parnasse/CASDEN)</option>
+                                    <option value="secundo">Secundo-accédant (Clause Transfert BNP/SG/LCL)</option>
+                                    <option value="cdd3">CDD ou Intérim (&gt; 3 ans ancienneté - Cible CIC)</option>
+                                    <option value="indep">Chef d'entreprise / Libéral / SCI</option>
+                                    <option value="primo_jeune">Primo-accédant &lt; 35 ans (Éligible PTZ / Bonifié)</option>
+                                    <option value="expat">Expatrié / Non-résident (Apport 20-30% requis)</option>
+                                </select>
+                            </div>
+
+                            <!-- Loyer actuel & Crédits en cours -->
+                            <div class="grid grid-cols-2 gap-3 pt-1">
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+                                    <label class="block text-[11px] font-bold text-slate-700">
+                                        Loyer actuel
+                                        <span class="block text-[10px] font-normal text-slate-500">Saut de charge</span>
+                                    </label>
+                                    <div class="flex items-center mt-1.5 bg-white rounded-lg px-2.5 py-1.5 border border-slate-200">
+                                        <input type="number" id="input-rent" value="950" min="0" max="8000" step="50"
+                                            oninput="calculateAll()"
+                                            class="w-full font-extrabold text-sm text-slate-900 focus:outline-none">
+                                        <span class="text-xs font-bold text-slate-400">€</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+                                    <label class="block text-[11px] font-bold text-slate-700">
+                                        Crédits en cours
+                                        <span class="block text-[10px] font-normal text-slate-500">Auto, conso...</span>
+                                    </label>
+                                    <div class="flex items-center mt-1.5 bg-white rounded-lg px-2.5 py-1.5 border border-slate-200">
+                                        <input type="number" id="input-debts" value="0" min="0" max="8000" step="25"
+                                            oninput="calculateAll()"
+                                            class="w-full font-extrabold text-sm text-slate-900 focus:outline-none">
+                                        <span class="text-xs font-bold text-slate-400">€</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Apport Personnel -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-700">Apport personnel mobilisable</label>
+                                        <span id="apport-pct-label" class="block text-[10px] text-slate-500">Soit 14,0% du prix du bien</span>
+                                    </div>
+                                    <div class="flex items-center bg-slate-100 rounded-xl px-2.5 py-1.5 border border-slate-200">
+                                        <input type="number" id="input-downpayment" value="35000" min="0" max="800000" step="1000"
+                                            oninput="syncInputs('downpayment', this.value)"
+                                            class="w-24 text-right font-extrabold text-sm bg-transparent focus:outline-none text-slate-900">
+                                        <span class="text-xs font-bold text-slate-500 ml-1">€</span>
+                                    </div>
+                                </div>
+                                <input type="range" id="slider-downpayment" min="0" max="150000" step="1000" value="35000"
+                                    oninput="syncInputs('downpayment', this.value)">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 2: LE BIEN & LE PROJET IMMOBILIER -->
+                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 sm:p-6 print-shadow-none">
+                        <div class="flex items-center justify-between mb-4 pb-2.5 border-b border-slate-100">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-7 h-7 rounded-lg bg-brand-light text-brand flex items-center justify-center">
+                                    <i class="fa-solid fa-house-chimney-window text-xs"></i>
+                                </div>
+                                <h2 class="text-sm sm:text-base font-extrabold text-slate-800">2. Bien Visé &amp; Financement</h2>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700" id="notary-badge">Frais ~8%</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Prix du bien FAI -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <label class="text-xs font-bold text-slate-700">Prix du bien affiché (FAI)</label>
+                                    <div class="flex items-center bg-slate-100 rounded-xl px-2.5 py-1.5 border border-slate-200">
+                                        <input type="number" id="input-price" value="250000" min="30000" max="2500000" step="5000"
+                                            oninput="syncInputs('price', this.value)"
+                                            class="w-24 text-right font-extrabold text-sm bg-transparent focus:outline-none text-slate-900">
+                                        <span class="text-xs font-bold text-slate-500 ml-1">€</span>
+                                    </div>
+                                </div>
+                                <input type="range" id="slider-price" min="50000" max="750000" step="5000" value="250000"
+                                    oninput="syncInputs('price', this.value)">
+                            </div>
+
+                            <!-- Type de bien (Ancien vs Neuf) -->
+                            <div class="grid grid-cols-2 gap-2">
+                                <button type="button" id="btn-type-ancien" onclick="setPropertyType('ancien')"
+                                    class="min-h-[42px] py-2 px-3 rounded-xl text-xs font-extrabold border transition flex items-center justify-center gap-1.5 bg-brand text-white border-brand">
+                                    <i class="fa-solid fa-landmark"></i> Ancien (~8%)
+                                </button>
+                                <button type="button" id="btn-type-neuf" onclick="setPropertyType('neuf')"
+                                    class="min-h-[42px] py-2 px-3 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1.5 bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100">
+                                    <i class="fa-solid fa-building-circle-check"></i> Neuf / VEFA (~2.5%)
+                                </button>
+                            </div>
+
+                            <!-- Enveloppe Travaux -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-700">Budget Travaux / Rénovation</label>
+                                        <span class="block text-[10px] text-slate-500">Seuil 10% = Déblocage durée 27 ans</span>
+                                    </div>
+                                    <div class="flex items-center bg-slate-100 rounded-xl px-2.5 py-1.5 border border-slate-200">
+                                        <input type="number" id="input-works" value="15000" min="0" max="300000" step="1000"
+                                            oninput="syncInputs('works', this.value)"
+                                            class="w-24 text-right font-extrabold text-sm bg-transparent focus:outline-none text-slate-900">
+                                        <span class="text-xs font-bold text-slate-500 ml-1">€</span>
+                                    </div>
+                                </div>
+                                <input type="range" id="slider-works" min="0" max="100000" step="1000" value="15000"
+                                    oninput="syncInputs('works', this.value)">
+                            </div>
+
+                            <!-- Classe DPE & Chauffage Électrique (Réforme 2026) -->
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-2.5">
+                                <div class="flex items-center justify-between gap-2">
+                                    <label class="text-xs font-bold text-slate-700">Classe DPE</label>
+                                    <div class="flex space-x-1">
+                                        <button type="button" onclick="setDPE('AB')" id="dpe-AB"
+                                            class="px-2.5 py-1.5 rounded-lg text-xs font-bold border border-emerald-300 bg-emerald-50 text-emerald-800">
+                                            A / B
+                                        </button>
+                                        <button type="button" onclick="setDPE('CDE')" id="dpe-CDE"
+                                            class="px-2.5 py-1.5 rounded-lg text-xs font-extrabold border border-amber-500 bg-amber-500 text-white shadow-sm">
+                                            C / D / E
+                                        </button>
+                                        <button type="button" onclick="setDPE('FG')" id="dpe-FG"
+                                            class="px-2.5 py-1.5 rounded-lg text-xs font-bold border border-rose-300 bg-rose-50 text-rose-800">
+                                            F / G
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <label class="flex items-start space-x-2.5 cursor-pointer pt-1">
+                                    <input type="checkbox" id="check-electric-dpe" onchange="calculateAll()"
+                                        class="mt-0.5 w-4 h-4 rounded text-brand focus:ring-0 border-slate-300 shrink-0">
+                                    <span class="text-[11px] text-slate-700 leading-snug">
+                                        <strong>Chauffage électrique :</strong> Reclassement DPE 2026 (coeff. énergie primaire abaissé de 2,3 à <strong>1,9</strong>).
+                                    </span>
+                                </label>
+                            </div>
+
+                            <!-- Durée du prêt -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-2">Durée d'emprunt souhaitée</label>
+                                <div class="grid grid-cols-4 gap-1.5">
+                                    <button type="button" onclick="setDuration(15)" id="dur-15"
+                                        class="min-h-[44px] py-2 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition">
+                                        15 ans
+                                    </button>
+                                    <button type="button" onclick="setDuration(20)" id="dur-20"
+                                        class="min-h-[44px] py-2 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition">
+                                        20 ans
+                                    </button>
+                                    <button type="button" onclick="setDuration(25)" id="dur-25"
+                                        class="min-h-[44px] py-2 rounded-xl text-xs font-extrabold border bg-brand text-white border-brand transition">
+                                        25 ans
+                                    </button>
+                                    <button type="button" onclick="setDuration(27)" id="dur-27"
+                                        class="min-h-[44px] py-1.5 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition relative">
+                                        27 ans
+                                        <span class="block text-[9px] font-normal opacity-80">Travaux 10%</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- RIGHT COLUMN: REAL-TIME DIAGNOSTIC, RESCUE LEVERS & BANKING RADAR (7 cols on Desktop) -->
+                <div class="lg:col-span-7 space-y-5">
+
+                    <!-- MAIN VERDICT BANNER (FEU TRICOLORE HCSF) -->
+                    <div id="verdict-card" class="rounded-2xl p-4 sm:p-6 border-2 transition-all duration-300 shadow-sm print-shadow-none bg-amber-50/90 border-amber-400">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start sm:items-center space-x-3.5">
+                                <div id="verdict-icon-box" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md shrink-0">
+                                    <i id="verdict-icon" class="fa-solid fa-triangle-exclamation"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center flex-wrap gap-1.5">
+                                        <span id="verdict-badge" class="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950">
+                                            Diagnostic HCSF Nov. 2026
+                                        </span>
+                                        <span id="active-optimizations-pill" class="hidden text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white">
+                                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Sauvetage Actif
+                                        </span>
+                                    </div>
+                                    <h2 id="verdict-title" class="text-base sm:text-xl font-extrabold text-slate-900 mt-1 leading-snug">
+                                        Dossier Tendu — Ingénierie de Sauvetage Requise
+                                    </h2>
+                                    <p id="verdict-subtitle" class="text-xs text-slate-700 mt-0.5 leading-relaxed">
+                                        Le taux d'effort dépasse le plafond HCSF de 35% avec l'assurance groupe bancaire standard.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Big Debt Ratio Display -->
+                            <div class="bg-white/95 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-slate-200/80 flex sm:block items-center justify-between sm:text-right shrink-0">
+                                <div>
+                                    <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Taux d'Effort HCSF</span>
+                                    <span class="text-[10px] font-semibold text-slate-500">Max légal : 35,0%</span>
+                                </div>
+                                <span id="kpi-debt-ratio" class="text-2xl sm:text-3xl font-black text-amber-600">36.3%</span>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar HCSF & Usury Rate Check -->
+                        <div class="mt-4 pt-3 border-t border-slate-200/60">
+                            <div class="flex justify-between text-[10px] sm:text-[11px] font-semibold text-slate-600 mb-1">
+                                <span>Confort (&lt; 30%)</span>
+                                <span class="text-brand font-extrabold">Plafond HCSF : 35%</span>
+                                <span>Zone Refus (&gt; 37%)</span>
+                            </div>
+                            <div class="w-full h-3 bg-slate-200/90 rounded-full overflow-hidden relative">
+                                <div class="absolute top-0 bottom-0 left-[70%] w-0.5 bg-slate-950 z-10" title="Plafond HCSF 35%"></div>
+                                <div id="debt-progress-bar" class="h-full bg-amber-500 rounded-full transition-all duration-300" style="width: 72.6%;"></div>
+                            </div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 mt-2.5 text-[11px]">
+                                <span id="taeg-usure-status" class="font-bold text-slate-700 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-shield-check text-emerald-600"></i>
+                                    TAEG estimé : <strong>4,32%</strong> (Plafond Usure T4 2026 : <strong>5,40%</strong> — Marge : +1,08 pt)
+                                </span>
+                                <span id="effective-rate-pill" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-200/80 text-slate-800">
+                                    Taux nominal : 3,70%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 KEY FINANCIAL INDICATORS (2x2 Grid on Mobile & Desktop) -->
+                    <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                        <!-- KPI 1: Mensualité globale -->
+                        <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm print-shadow-none">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] sm:text-xs font-bold text-slate-500">Mensualité Totale</span>
+                                <i class="fa-solid fa-coins text-brand opacity-75 text-xs sm:text-sm"></i>
+                            </div>
+                            <div class="mt-1.5 flex items-baseline space-x-1">
+                                <span id="kpi-monthly-payment" class="text-lg sm:text-2xl font-black text-slate-900">1 361 €</span>
+                                <span class="text-[10px] sm:text-xs text-slate-500 font-semibold">/m</span>
+                            </div>
+                            <p id="kpi-monthly-detail" class="text-[10px] sm:text-[11px] text-slate-500 mt-1 leading-tight">
+                                Dont <strong>83 €</strong> ass. (3,70% / 25a)
+                            </p>
+                        </div>
+
+                        <!-- KPI 2: Saut de Charge & Reste à vivre -->
+                        <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm print-shadow-none">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] sm:text-xs font-bold text-slate-500">Saut de Charge</span>
+                                <span id="jump-badge" class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800">À argumenter</span>
+                            </div>
+                            <div class="mt-1.5 flex items-baseline justify-between">
+                                <div>
+                                    <span id="kpi-payment-jump" class="text-lg sm:text-2xl font-black text-slate-900">+411 €</span>
+                                    <span class="text-[10px] text-slate-500 block">vs loyer</span>
+                                </div>
+                                <div class="text-right">
+                                    <span id="kpi-living-left" class="text-sm sm:text-lg font-extrabold text-emerald-700">2 389 €</span>
+                                    <span class="text-[10px] text-slate-500 block">Reste à vivre</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KPI 3: Montant total à financer -->
+                        <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm print-shadow-none">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] sm:text-xs font-bold text-slate-500">Emprunt Total</span>
+                                <i class="fa-solid fa-file-invoice-dollar text-brand opacity-75 text-xs sm:text-sm"></i>
+                            </div>
+                            <div class="mt-1.5 flex items-baseline space-x-2">
+                                <span id="kpi-loan-amount" class="text-lg sm:text-2xl font-black text-slate-900">250 000 €</span>
+                            </div>
+                            <p id="kpi-loan-detail" class="text-[10px] sm:text-[11px] text-slate-500 mt-1 leading-tight">
+                                Notaire : <span id="kpi-notary-eur" class="font-semibold text-slate-700">20 000 €</span>
+                            </p>
+                        </div>
+
+                        <!-- KPI 4: Capacité Max HCSF (35%) -->
+                        <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm print-shadow-none">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] sm:text-xs font-bold text-slate-500">Budget Max (35%)</span>
+                                <i class="fa-solid fa-scale-balanced text-brand opacity-75 text-xs sm:text-sm"></i>
+                            </div>
+                            <div class="mt-1.5 flex items-baseline space-x-1">
+                                <span id="kpi-max-price" class="text-lg sm:text-2xl font-black text-brand">241 600 €</span>
+                                <span class="text-[10px] text-slate-500 font-bold">FAI</span>
+                            </div>
+                            <p id="kpi-max-detail" class="text-[10px] sm:text-[11px] text-slate-500 mt-1 leading-tight">
+                                Mensualité max : <span id="kpi-max-monthly" class="font-semibold text-slate-700">1 313 €</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- MODULE 3: SAUVETAGE DE DOSSIER & LEVIERS D'INGÉNIERIE NOV. 2026 -->
+                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 sm:p-6 print-shadow-none">
+                        <div class="flex items-center justify-between gap-2 mb-4 pb-2.5 border-b border-slate-100">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-life-ring text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm sm:text-base font-extrabold text-slate-800">3. Leviers de Sauvetage de Dossier (Nov. 2026)</h3>
+                                    <p class="text-[11px] text-slate-500">Activez un levier pour faire passer le client sous les 35% en direct.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <!-- LEVIER 1: LOI LEMOINE (Délégation d'assurance) -->
+                            <div id="lever-lemoine-card" class="p-3.5 sm:p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50/40 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div class="space-y-1">
+                                    <div class="flex items-center flex-wrap gap-1.5">
+                                        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-600 text-white">
+                                            Levier N°1 • Loi Lemoine
+                                        </span>
+                                        <span class="text-xs font-extrabold text-emerald-700" id="lemoine-gain-badge">Gain : -1.4 pt d'endettement</span>
+                                    </div>
+                                    <h4 class="text-xs sm:text-sm font-bold text-slate-900">Substitution d'Assurance Emprunteur (0,40% → 0,15%)</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed" id="lemoine-desc">
+                                        Passage en délégation externe : baisse la mensualité de <strong>52 €/mois</strong> et économise <strong>15 625 €</strong> sur 25 ans.
+                                    </p>
+                                </div>
+                                <label class="inline-flex items-center cursor-pointer shrink-0 self-end sm:self-center no-print bg-white px-3 py-2 rounded-xl border border-emerald-300 shadow-sm">
+                                    <input type="checkbox" id="toggle-lemoine" onchange="calculateAll()" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all relative peer-checked:bg-emerald-600"></div>
+                                    <span class="ml-2 text-xs font-extrabold text-slate-800">Activer</span>
+                                </label>
+                            </div>
+
+                            <!-- LEVIER 2: PRÊT BONIFIÉ MUTUALISTE (Nouveauté Nov. 2026) -->
+                            <div id="lever-boost-card" class="p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-50/70 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div class="space-y-1">
+                                    <div class="flex items-center flex-wrap gap-1.5">
+                                        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-sky-100 text-sky-900">
+                                            Levier N°2 • Prêt Bonifié Mutualiste
+                                        </span>
+                                        <span class="text-xs font-bold text-sky-700" id="boost-gain-badge">Enveloppe 35 000 € à 2,49%</span>
+                                    </div>
+                                    <h4 class="text-xs sm:text-sm font-bold text-slate-800">Ligne Primo-Accédant / DPE (Crédit Agricole 2,49% • CM 2,55% • CE 2,75%)</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed" id="boost-desc">
+                                        Intègre 35 000 € à taux bonifié (2,49%) dans le montage pour abaisser le taux moyen pondéré et économiser sur la mensualité.
+                                    </p>
+                                </div>
+                                <label class="inline-flex items-center cursor-pointer shrink-0 self-end sm:self-center no-print bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm">
+                                    <input type="checkbox" id="toggle-boost-loan" onchange="calculateAll()" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all relative peer-checked:bg-sky-600"></div>
+                                    <span class="ml-2 text-xs font-extrabold text-slate-800">Activer</span>
+                                </label>
+                            </div>
+
+                            <!-- LEVIER 3: EXTENSION 27 ANS (Seuil 10% Travaux) -->
+                            <div id="lever-27-card" class="p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-50/70 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div class="space-y-1">
+                                    <div class="flex items-center flex-wrap gap-1.5">
+                                        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">
+                                            Levier N°3 • Dérogation HCSF 27 ans
+                                        </span>
+                                        <span class="text-xs font-bold text-indigo-700" id="lever27-status-badge">Seuil travaux 10% requis</span>
+                                    </div>
+                                    <h4 class="text-xs sm:text-sm font-bold text-slate-800">Étalement sur 27 ans via Rénovation (&ge; 10% de l'opération)</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed" id="lever27-desc">
+                                        En intégrant au moins 10% de travaux, l'acquéreur débloque légalement l'amortissement sur 27 ans.
+                                    </p>
+                                </div>
+                                <button type="button" onclick="activate27YearsRescue()" id="btn-activate-27"
+                                    class="min-h-[40px] px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shrink-0 self-end sm:self-center no-print shadow-sm">
+                                    Calibrer 10% &amp; 27 ans
+                                </button>
+                            </div>
+
+                            <!-- LEVIER 4: SOLDER CRÉDIT CONSO -->
+                            <div id="lever-debt-card" class="p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-50/70 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div class="space-y-1">
+                                    <div class="flex items-center flex-wrap gap-1.5">
+                                        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+                                            Levier N°4 • Restructuration
+                                        </span>
+                                        <span class="text-xs font-bold text-amber-700" id="debt-gain-badge">Gain : -0.0 pt d'endettement</span>
+                                    </div>
+                                    <h4 class="text-xs sm:text-sm font-bold text-slate-800">Solder les crédits conso en cours avec une fraction de l'apport</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed" id="debt-lever-desc">
+                                        Aucun crédit annexe en cours déclaré sur ce dossier.
+                                    </p>
+                                </div>
+                                <label class="inline-flex items-center cursor-pointer shrink-0 self-end sm:self-center no-print bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm">
+                                    <input type="checkbox" id="toggle-clear-debt" onchange="calculateAll()" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all relative peer-checked:bg-amber-600"></div>
+                                    <span class="ml-2 text-xs font-extrabold text-slate-800">Solder</span>
+                                </label>
+                            </div>
+
+                            <!-- ALERTE OPPORTUNITÉ DPE 2026 (Électricité coeff 1.9) -->
+                            <div id="dpe-2026-alert" class="hidden p-3.5 rounded-xl border-2 border-sky-400 bg-sky-50 text-sky-950">
+                                <div class="flex items-start space-x-2.5">
+                                    <i class="fa-solid fa-bolt-lightning text-sky-600 text-base mt-0.5"></i>
+                                    <div>
+                                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-sky-800">
+                                            Réforme DPE 2026 — Chauffage Électrique (Coeff 1,9)
+                                        </h4>
+                                        <p class="text-[11px] text-sky-900 mt-0.5 leading-relaxed">
+                                            Le coefficient d'énergie primaire abaissé de 2,3 à <strong>1,9</strong> permet à ~850 000 passoires électriques F/G de gagner une classe DPE sans travaux. Argument clé pour débloquer les banques et rassurer l'acheteur !
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- MODULE 4: RADAR BANCAIRE NOV. 2026 & SCRIPTING CHRIS VOSS -->
+                    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 sm:p-6 print-shadow-none">
+                        <div class="flex items-center justify-between mb-4 pb-2.5 border-b border-slate-100">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-brand-light text-brand flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-compass text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm sm:text-base font-extrabold text-slate-800">4. Radar Bancaire Nov. 2026 &amp; Argumentaire</h3>
+                                    <p class="text-[11px] text-slate-500">Où orienter ce profil acquéreur ce mois-ci ?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="bank-radar-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+
+                        <!-- Psychological Profile Selector -->
+                        <div class="bg-slate-900 text-white rounded-xl p-3.5 sm:p-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-700/80">
+                                <div>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Négociation &amp; Psychologie (SONCAS / Voss)</span>
+                                    <h4 class="text-xs sm:text-sm font-bold">Phrase d'ancrage à utiliser en rendez-vous</h4>
+                                </div>
+                                <select id="psych-profile" onchange="updatePsychScript()"
+                                    class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-xs font-semibold text-white focus:outline-none focus:border-amber-400 no-print">
+                                    <option value="vendeur_nov26">Face au Vendeur : Justifier une baisse de prix (Nov. 2026)</option>
+                                    <option value="acheteur_nov26">Face à l'Acheteur : Signer avant la BCE du 17 déc. 2026</option>
+                                    <option value="anxieux">Acquéreur Anxieux : Sécuriser via Loi Lemoine</option>
+                                    <option value="analytique">Acquéreur Analytique : Preuve par le DPE 1,9</option>
+                                    <option value="banquier">Face au Banquier : Tactical Labeling HCSF</option>
+                                </select>
+                            </div>
+                            <div class="mt-2.5 space-y-1.5">
+                                <span class="block text-[11px] font-bold text-amber-400" id="psych-soncas">Levier Novembre 2026 • Hausse des taux (+0,50 pt depuis mai)</span>
+                                <blockquote id="psych-script" class="text-xs italic text-slate-100 bg-slate-800/90 p-3 rounded-lg border-l-4 border-amber-400 leading-relaxed">
+                                    « Depuis mai 2026, les taux ont repris +0,50 pt et les acheteurs sous 40 000 € de revenus empruntent désormais à plus de 4,07 % sur 25 ans. Ajuster votre prix aujourd'hui, c'est capter les derniers acquéreurs solvables avant 2027. »
+                                </blockquote>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ACTIONS & EXPORT CRM -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm no-print">
+                        <div class="text-xs text-slate-600">
+                            <strong class="text-slate-900 block">Exporter la fiche de solvabilité (Nov. 2026)</strong>
+                            Copiez le compte-rendu complet pour le coller dans le logiciel CRM de l'agence.
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="copyCrmReport()" class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2.5 rounded-xl bg-brand text-white text-xs font-extrabold hover:opacity-95 transition flex items-center justify-center gap-2 shadow-sm">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Copier résumé CRM</span>
+                            </button>
+                            <button onclick="window.print()" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-print"></i>
+                                <span>PDF</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- TAB 2: ACTUALITÉS & MARCHÉ NOVEMBRE 2026 (SPÉCIAL AGENTS IMMO)      -->
+        <!-- =================================================================== -->
+        <div id="tab-content-news" class="hidden space-y-6">
+
+            <!-- PLACEMENT 2: TEACHER EXPERT CALLOUT BOX AT TOP OF TAB 2 (Screen only, hidden in White-Label Mode) -->
+            <div id="news-signature-callout" class="bg-white rounded-2xl p-4 sm:p-5 border-l-4 border-brand shadow-sm border border-slate-200/90 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print">
+                <div class="flex items-start space-x-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-brand-light text-brand flex items-center justify-center font-bold shrink-0 mt-0.5">
+                        <i class="fa-solid fa-file-Soli-chart text-lg fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand block">
+                            Note de Conjoncture &amp; Ingénierie Bancaire — Novembre 2026
+                        </span>
+                        <p class="text-xs sm:text-sm text-slate-800 font-semibold mt-0.5 leading-snug">
+                            Veille mensuelle &amp; ingénierie : <strong class="text-slate-950 font-extrabold">M. NGUON, enseignant pro en éco-gestion au Lycée Georges Brassens de Villepinte</strong> <span class="text-slate-500 font-normal">(Ex-Directeur d'agence bancaire &amp; Courtier)</span>.
+                        </p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">
+                            Synthèse destinée aux directeurs d'agence et tuteurs de stage pour sécuriser les compromis de vente de fin d'année.
+                        </p>
+                    </div>
+                </div>
+                <a href="mailto:?subject=Accueil%20stagiaire%20Bac%20Pro%20MCV%20-%20Lyc%C3%A9e%20Georges%20Brassens%20Villepinte&body=Bonjour%20Monsieur%20Nguon,%0D%0A%0D%0ASuite%20%C3%A0%20la%20pr%C3%A9sentation%20de%20votre%20outil%20Qualif'Immo%202026%20par%20votre%20%C3%A9l%C3%A8ve,%20nous%20souhaitons%20%C3%A9changer%20avec%20vous%20concernant%20l'accueil%20en%20stage%20(PFMP)%20au%20sein%20de%20notre%20agence." 
+                   class="px-3.5 py-2 rounded-xl bg-brand text-white text-xs font-extrabold hover:opacity-95 transition flex items-center gap-2 shrink-0 shadow-sm self-end sm:self-center">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Contacter M. Nguon</span>
+                </a>
+            </div>
+
+            <!-- HERO BANNER NOVEMBRE 2026 -->
+            <div class="bg-slate-900 text-white rounded-2xl p-5 sm:p-7 shadow-lg border border-slate-800 relative overflow-hidden">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 relative z-10">
+                    <div class="space-y-2 max-w-2xl">
+                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-extrabold uppercase tracking-wider">
+                            <i class="fa-solid fa-satellite-dish"></i>
+                            <span>Flash Veille Immobilière • Relevés 3-9 Novembre 2026</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-white">
+                            Choc OAT 10 ans à 5,13 % &amp; Remontée des Taux : les Clés pour Closer en Novembre 2026
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Synthèse opérationnelle extraite du carnet de veille : barèmes bancaires par profil, prêts bonifiés mutualistes, clause de transfert de prêt et nouveaux plafonds PTZ 2026.
+                        </p>
+                    </div>
+                    <!-- Key Macro Metrics Box -->
+                    <div class="grid grid-cols-3 gap-2.5 shrink-0">
+                        <div class="bg-slate-800/90 border border-rose-500/40 p-3 rounded-xl text-center">
+                            <span class="block text-[10px] font-bold uppercase text-rose-300">OAT 10 Ans</span>
+                            <span class="text-lg sm:text-xl font-black text-white">5,13%</span>
+                            <span class="block text-[9px] text-slate-400">Plus haut depuis 2002</span>
+                        </div>
+                        <div class="bg-slate-800/90 border border-amber-500/40 p-3 rounded-xl text-center">
+                            <span class="block text-[10px] font-bold uppercase text-amber-300">Taux Dépôt BCE</span>
+                            <span class="text-lg sm:text-xl font-black text-white">2,50%</span>
+                            <span class="block text-[9px] text-slate-400">Réunion 17 déc.</span>
+                        </div>
+                        <div class="bg-slate-800/90 border border-emerald-500/40 p-3 rounded-xl text-center">
+                            <span class="block text-[10px] font-bold uppercase text-emerald-300">Usure T4 2026</span>
+                            <span class="text-lg sm:text-xl font-black text-white">5,40%</span>
+                            <span class="block text-[9px] text-slate-400">Prêts &ge; 20 ans</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION A: ARGUMENTAIRES TERRAIN VENDEURS vs ACHETEURS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Argument Vendeur -->
+                <div class="bg-white rounded-2xl p-5 border-l-4 border-rose-600 shadow-sm border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded bg-rose-100 text-rose-900">
+                            <i class="fa-solid fa-tags mr-1"></i> Argumentaire Vendeur (Négociation Mandat)
+                        </span>
+                        <span class="text-[11px] font-bold text-slate-400">Novembre 2026</span>
+                    </div>
+                    <h3 class="text-base font-extrabold text-slate-900 mb-2">
+                        Pourquoi le vendeur doit ajuster son prix dès maintenant
+                    </h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                        Depuis le point bas de mai 2026 (3,30% sur 20 ans), les taux ont repris <strong>+0,50 à +0,65 point</strong> sous l'effet de l'inflation européenne (4,0% en octobre) et de l'OAT à plus de 5%.
+                    </p>
+                    <div class="bg-rose-50/80 p-3.5 rounded-xl border border-rose-200 text-xs text-rose-950 italic leading-relaxed">
+                        <strong>Ce qu'il faut dire au propriétaire :</strong> « Les banques appliquent désormais une segmentation sévère : un ménage gagnant moins de 40 000 €/an emprunte à <strong>4,07 % sur 25 ans</strong>. Attendre le printemps 2027 sans ajuster votre prix de présentation, c'est perdre les acquéreurs qui ont encore une offre bancaire valide avant le 17 décembre. »
+                    </div>
+                </div>
+
+                <!-- Argument Acheteur -->
+                <div class="bg-white rounded-2xl p-5 border-l-4 border-emerald-600 shadow-sm border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded bg-emerald-100 text-emerald-900">
+                            <i class="fa-solid fa-file-signature mr-1"></i> Argumentaire Acheteur (Closing Compromis)
+                        </span>
+                        <span class="text-[11px] font-bold text-slate-400">Urgence 17 Déc.</span>
+                    </div>
+                    <h3 class="text-base font-extrabold text-slate-900 mb-2">
+                        Le paradoxe bancaire : emprunter moins cher que l'État !
+                    </h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                        Anomalie historique en novembre 2026 : l'État français emprunte à <strong>5,13 %</strong> sur 10 ans alors que les banques prêtent aux particuliers entre <strong>3,60 % et 3,90 %</strong> en rognant leurs marges pour conquérir des clients.
+                    </p>
+                    <div class="bg-emerald-50/80 p-3.5 rounded-xl border border-emerald-200 text-xs text-emerald-950 italic leading-relaxed">
+                        <strong>Ce qu'il faut dire à l'acheteur hésitant :</strong> « Les banques subventionnent actuellement votre taux par rapport au marché obligataire, mais elles relèvent leurs barèmes de +0,15 pt chaque mois. Signer le compromis maintenant permet de figer votre taux avant la réunion BCE du <strong>17 décembre 2026</strong>, puis de réduire l'assurance via la Loi Lemoine. »
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION B: TABLEAU DES BARÈMES NOVEMBRE 2026 & SEGMENTATION REVENUS -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                <!-- Grille Générale par Durée (7 cols) -->
+                <div class="lg:col-span-7 bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-base font-extrabold text-slate-900">Barèmes Immobiliers — Novembre 2026</h3>
+                            <p class="text-xs text-slate-500">Comparatif Taux Excellents (Top 10%), Taux Négociés Courtiers et Moyenne Marché.</p>
+                        </div>
+                        <span class="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">Pour 200 000 €</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-slate-500 uppercase text-[10px] font-extrabold">
+                                    <th class="py-2.5 pr-2">Durée</th>
+                                    <th class="py-2.5 px-2 text-emerald-700">Excellent (Top 10%)</th>
+                                    <th class="py-2.5 px-2 text-brand">Négocié (Courtier)</th>
+                                    <th class="py-2.5 px-2 text-slate-700">Moyen Standard</th>
+                                    <th class="py-2.5 pl-2 text-right">Mensualité / 200k€</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 font-medium">
+                                <tr>
+                                    <td class="py-3 pr-2 font-extrabold text-slate-900">10 ans</td>
+                                    <td class="py-3 px-2 text-emerald-700 font-bold">2,99 % - 3,07 %</td>
+                                    <td class="py-3 px-2 font-bold text-brand">3,40 %</td>
+                                    <td class="py-3 px-2 text-slate-600">3,50 %</td>
+                                    <td class="py-3 pl-2 text-right font-bold text-slate-900">1 977 €</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 pr-2 font-extrabold text-slate-900">15 ans</td>
+                                    <td class="py-3 px-2 text-emerald-700 font-bold">3,13 % - 3,30 %</td>
+                                    <td class="py-3 px-2 font-bold text-brand">3,55 %</td>
+                                    <td class="py-3 px-2 text-slate-600">3,65 %</td>
+                                    <td class="py-3 pl-2 text-right font-bold text-slate-900">1 444 €</td>
+                                </tr>
+                                <tr class="bg-blue-50/40">
+                                    <td class="py-3 pr-2 font-extrabold text-slate-900">20 ans</td>
+                                    <td class="py-3 px-2 text-emerald-700 font-bold">3,25 % - 3,45 %</td>
+                                    <td class="py-3 px-2 font-extrabold text-brand">3,60 %</td>
+                                    <td class="py-3 px-2 text-slate-600">3,80 %</td>
+                                    <td class="py-3 pl-2 text-right font-extrabold text-slate-900">1 191 €</td>
+                                </tr>
+                                <tr class="bg-amber-50/40">
+                                    <td class="py-3 pr-2 font-extrabold text-slate-900">25 ans</td>
+                                    <td class="py-3 px-2 text-emerald-700 font-bold">3,45 % - 3,53 %</td>
+                                    <td class="py-3 px-2 font-extrabold text-brand">3,70 %</td>
+                                    <td class="py-3 px-2 text-slate-600">3,90 %</td>
+                                    <td class="py-3 pl-2 text-right font-extrabold text-slate-900">1 045 €</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-3">
+                        <i class="fa-solid fa-location-dot text-brand mr-1"></i> <strong>Disparités régionales (20 ans) :</strong> Île-de-France à <strong>3,75 %</strong> (forte concurrence bancaire) contre 3,89 % dans l'Est et le Nord.
+                    </p>
+                </div>
+
+                <!-- Grille par Tranche de Revenus (5 cols) -->
+                <div class="lg:col-span-5 bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+                    <div class="mb-4">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900">Segmentation Sociale</span>
+                        <h3 class="text-base font-extrabold text-slate-900 mt-1">Taux selon les Revenus Annuels du Foyer</h3>
+                        <p class="text-xs text-slate-500">Écart de +0,54 pt sur 25 ans entre hauts revenus et revenus modestes.</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-slate-500 uppercase text-[10px] font-extrabold">
+                                    <th class="py-2 pr-2">Revenus / an</th>
+                                    <th class="py-2 px-2">15 ans</th>
+                                    <th class="py-2 px-2">20 ans</th>
+                                    <th class="py-2 pl-2 text-right">25 ans</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr>
+                                    <td class="py-2.5 pr-2 font-bold text-rose-800">&lt; 40 000 €</td>
+                                    <td class="py-2.5 px-2">3,74 %</td>
+                                    <td class="py-2.5 px-2 font-semibold">3,91 %</td>
+                                    <td class="py-2.5 pl-2 text-right font-extrabold text-rose-700">4,07 %</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 pr-2 font-bold text-slate-800">40k€ à 80k€</td>
+                                    <td class="py-2.5 px-2">3,66 %</td>
+                                    <td class="py-2.5 px-2 font-semibold">3,85 %</td>
+                                    <td class="py-2.5 pl-2 text-right font-bold text-slate-900">3,97 %</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 pr-2 font-bold text-slate-800">80k€ à 120k€</td>
+                                    <td class="py-2.5 px-2">3,61 %</td>
+                                    <td class="py-2.5 px-2 font-semibold">3,80 %</td>
+                                    <td class="py-2.5 pl-2 text-right font-bold text-slate-900">3,82 %</td>
+                                </tr>
+                                <tr class="bg-emerald-50/60">
+                                    <td class="py-2.5 pr-2 font-extrabold text-emerald-900">&gt; 120 000 €</td>
+                                    <td class="py-2.5 px-2 font-bold text-emerald-700">3,37 %</td>
+                                    <td class="py-2.5 px-2 font-bold text-emerald-700">3,47 %</td>
+                                    <td class="py-2.5 pl-2 text-right font-extrabold text-emerald-700">3,53 %</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION C: LES ARMES SECRÈTES BANCAIRES (PRÊTS BONIFIÉS & TRANSFERT DE PRÊT) -->
+            <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
+                <div class="mb-4">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded bg-brand-light text-brand">Ingénierie Bancaire Novembre 2026</span>
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 mt-1">
+                        Les 4 Dispositifs Bancaires que tout Agent Immobilier doit connaître
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Arme 1: Prêts Bonifiés Mutualistes -->
+                    <div class="p-4 rounded-xl bg-sky-50/70 border border-sky-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-sky-900">1. Prêts Bonifiés Mutualistes</span>
+                            <i class="fa-solid fa-piggy-bank text-sky-600"></i>
+                        </div>
+                        <ul class="text-xs text-slate-700 space-y-1.5 leading-snug">
+                            <li>• <strong>Crédit Agricole :</strong> <strong>2,49 %</strong> sur 25 ans (jusqu'à 50 000 €, max 10% du projet).</li>
+                            <li>• <strong>Crédit Mutuel :</strong> <strong>2,55 %</strong> sur 20 ans (jusqu'à 40 000 €).</li>
+                            <li>• <strong>Caisse d'Épargne :</strong> <strong>2,75 %</strong> sur 25 ans (jusqu'à 35 000 €).</li>
+                            <li>• <strong>Banque Populaire :</strong> <strong>2,90 %</strong> sur 20 ans (jusqu'à 30 000 €).</li>
+                        </ul>
+                    </div>
+
+                    <!-- Arme 2: Transférabilité de prêt -->
+                    <div class="p-4 rounded-xl bg-indigo-50/70 border border-indigo-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-indigo-900">2. Clause Transfert de Prêt</span>
+                            <i class="fa-solid fa-right-left text-indigo-600"></i>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            Pour débloquer les <strong>secundo-accédants</strong> paralysés à l'idée de perdre leur ancien crédit à 1,5% : seules <strong>BNP Paribas, Société Générale et LCL</strong> maintiennent la transférabilité du prêt vers un nouveau bien en 2026 (délai max 6 mois entre vente et rachat).
+                        </p>
+                    </div>
+
+                    <!-- Arme 3: Banques en ligne -->
+                    <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-emerald-900">3. Banques Digitales (0€ Frais)</span>
+                            <i class="fa-solid fa-mobile-screen-button text-emerald-600"></i>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            <strong>BoursoBank, Fortuneo, Hello Bank! :</strong> 0 € de frais de dossier (économie 800 à 1 200 €) et décote de -0,20 pt si DPE A/B. <strong>Attention :</strong> rejet algorithmique immédiat si apport &lt; 10%, revenus variables ou montage SCI.
+                        </p>
+                    </div>
+
+                    <!-- Arme 4: Expatriés & Non-Résidents -->
+                    <div class="p-4 rounded-xl bg-amber-50/70 border border-amber-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-amber-900">4. Acquéreurs Expatriés</span>
+                            <i class="fa-solid fa-earth-europe text-amber-600"></i>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            Barèmes dédiés entre <strong>3,70 % et 4,00 %</strong> sur 20 ans (3,55% profils patrimoniaux). Exigence stricte en novembre 2026 : <strong>20 % à 30 % d'apport</strong> hors frais (40% hors UE) + nantissement de 10 % à 33 %.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION D: NOUVEAU BARÈME PTZ 2026 (PLAFONDS REVALORISÉS +8% à +13%) -->
+            <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                    <div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900">Prêt à Taux Zéro 2026-2027</span>
+                        <h3 class="text-base sm:text-lg font-extrabold text-slate-900 mt-1">
+                            Nouveaux Plafonds PTZ 2026 (Revalorisés de +8% à +13% • Quotité jusqu'à 50%)
+                        </h3>
+                    </div>
+                    <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">
+                        Différé total : 5, 10 ou 12 ans
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-slate-500 uppercase text-[10px] font-extrabold">
+                                <th class="py-2.5 pr-2">Foyer</th>
+                                <th class="py-2.5 px-2">Zone A / A bis (Plafond Revenus / Max PTZ 50%)</th>
+                                <th class="py-2.5 px-2">Zone B1 (Plafond Revenus / Max PTZ 50%)</th>
+                                <th class="py-2.5 pl-2">Zone B2 &amp; C (Ancien + 25% travaux éligible)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="py-2.5 pr-2 font-extrabold text-slate-900">1 personne</td>
+                                <td class="py-2.5 px-2">49 000 € • <strong class="text-brand">PTZ max 75 000 €</strong></td>
+                                <td class="py-2.5 px-2">34 500 € • <strong class="text-brand">PTZ max 67 500 €</strong></td>
+                                <td class="py-2.5 pl-2">28 500 € à 31 500 € • <strong>PTZ max 50k€ - 55k€</strong></td>
+                            </tr>
+                            <tr class="bg-slate-50/70">
+                                <td class="py-2.5 pr-2 font-extrabold text-slate-900">2 personnes</td>
+                                <td class="py-2.5 px-2">73 500 € • <strong class="text-brand">PTZ max 105 000 €</strong></td>
+                                <td class="py-2.5 px-2">51 750 € • <strong class="text-brand">PTZ max 94 500 €</strong></td>
+                                <td class="py-2.5 pl-2">42 750 € à 47 250 € • <strong>PTZ max 70k€ - 77k€</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="py-2.5 pr-2 font-extrabold text-slate-900">3 personnes</td>
+                                <td class="py-2.5 px-2">88 200 € • <strong class="text-brand">PTZ max 127 500 €</strong></td>
+                                <td class="py-2.5 px-2">62 100 € • <strong class="text-brand">PTZ max 115 000 €</strong></td>
+                                <td class="py-2.5 pl-2">51 300 € à 56 700 € • <strong>PTZ max 85k€ - 93,5k€</strong></td>
+                            </tr>
+                            <tr class="bg-emerald-50/40">
+                                <td class="py-2.5 pr-2 font-extrabold text-slate-900">4 personnes</td>
+                                <td class="py-2.5 px-2">102 900 € • <strong class="text-emerald-700">PTZ max 157 500 €</strong></td>
+                                <td class="py-2.5 px-2">72 450 € • <strong class="text-emerald-700">PTZ max 135 000 €</strong></td>
+                                <td class="py-2.5 pl-2">59 850 € à 66 150 € • <strong>PTZ max 100k€ - 110k€</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-3">
+                    <strong>Note pour l'agence :</strong> En zones A, Abis et B1 (ex: Villepinte, Aulnay-sous-Bois, Seine-Saint-Denis), le PTZ finance le <strong>neuf collectif</strong> et le <strong>Bail Réel Solidaire (BRS)</strong>. En zones B2 et C, il finance également l'<strong>ancien avec 25 % de travaux</strong> (DPE A à E après rénovation).
+                </p>
+            </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- TAB 3: MODE DÉMO AGENCE, PITCH ÉLÈVE & PARAMÈTRES NOTEBOOKLM        -->
+        <!-- =================================================================== -->
+        <div id="tab-content-pitch" class="hidden space-y-6 no-print">
+
+            <!-- 1. PERSONNALISATION AGENCE EN 5 SECONDES -->
+            <section class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-lg border border-slate-800">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded bg-amber-400 text-slate-950">Effet Waouh Terrain</span>
+                        <h3 class="text-base sm:text-lg font-extrabold text-white mt-1">
+                            1. Personnaliser l'Application aux Couleurs de l'Agence Ciblée
+                        </h3>
+                        <p class="text-xs text-slate-300">
+                            Remplissez ces 3 champs sur le trottoir avant d'entrer dans l'agence immobilière.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Nom de l'agence immobilière</label>
+                        <input type="text" id="custom-agency-name" placeholder="Ex: Century 21, Orpi, Laforêt..." value="Agence Immobilière" 
+                            oninput="updateAgencyBranding()"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Ville / Secteur</label>
+                        <input type="text" id="custom-agency-city" placeholder="Ex: Villepinte, Aulnay, Sevran..." value="Secteur Local" 
+                            oninput="updateAgencyBranding()"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Présenté par (Prénom &amp; Classe)</label>
+                        <input type="text" id="custom-student-name" placeholder="Ex: Lucas M. - Terminale MCV" value="" 
+                            oninput="updateAgencyBranding()"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Couleur de l'enseigne</label>
+                        <div class="grid grid-cols-4 gap-1.5">
+                            <button onclick="setTheme('blue')" class="py-2.5 px-2 rounded-xl bg-blue-700 hover:bg-blue-600 text-xs font-bold border border-blue-400 flex items-center justify-center">
+                                Bleu
+                            </button>
+                            <button onclick="setTheme('red')" class="py-2.5 px-2 rounded-xl bg-red-700 hover:bg-red-600 text-xs font-bold border border-red-400 flex items-center justify-center">
+                                Rouge
+                            </button>
+                            <button onclick="setTheme('gold')" class="py-2.5 px-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold border border-amber-300 flex items-center justify-center">
+                <div class="mt-4 pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <!-- White-Label Client Mode Checkbox -->
+                    <label class="inline-flex items-center cursor-pointer bg-slate-800/90 px-3.5 py-2 rounded-xl border border-slate-700">
+                        <input type="checkbox" id="toggle-whitelabel" onchange="setWhiteLabelMode(this.checked)" class="sr-only peer">
+                        <div class="w-9 h-5 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all relative peer-checked:bg-amber-400"></div>
+                        <span class="ml-2.5 text-xs font-bold text-slate-200">
+                            Mode Client / Marque Blanche <span class="text-slate-400 font-normal">(Masquer la mention Lycée &amp; M. Nguon à l'écran)</span>
+                        </span>
+                    </label>
+
+                    <button onclick="switchTab('sim')" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold transition flex items-center gap-2 self-end sm:self-auto">
+                        <i class="fa-solid fa-play"></i> Lancer la démo sur le Simulateur
+                    </button>
+                </div>
+            </section>
+
+            <!-- 2. ANTISÈCHE PITCH ÉLÈVE EN AGENCE (MÉTHODE 20 SECONDES) -->
+            <section class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
+                <div class="mb-4">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900">Guide Terrain Bac Pro MCV</span>
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 mt-1">
+                        2. Antisèche Pitch en Agence (Décrocher son Stage en 45 secondes)
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <span class="text-xs font-black text-brand uppercase">Étape 1 • L'Accroche (10 sec)</span>
+                        <p class="text-xs text-slate-700 mt-1.5 leading-relaxed italic">
+                            « Bonjour, je suis élève en Bac Pro MCV au lycée Georges Brassens. Avant de venir vous demander un stage, on a créé avec mon professeur, ancien banquier et courtier, un simulateur gratuit mis à jour avec les taux de novembre 2026 spécialement pour votre agence. »
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-amber-50/70 border border-amber-200">
+                        <span class="text-xs font-black text-amber-900 uppercase">Étape 2 • La Démo Waouh (20 sec)</span>
+                        <p class="text-xs text-slate-800 mt-1.5 leading-relaxed italic">
+                            Montrer le téléphone en mode portrait : « Regardez, un acheteur bloqué à 36,3 % d'endettement en novembre 2026 : j'active le bouton Loi Lemoine ou le prêt bonifié à 2,49 %, et il repasse immédiatement dans le Vert à 34,9 % sans baisser le prix du bien. »
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                        <span class="text-xs font-black text-emerald-900 uppercase">Étape 3 • Le Closing Stage (15 sec)</span>
+                        <p class="text-xs text-slate-800 mt-1.5 leading-relaxed italic">
+                            « Je cherche ma période de stage et je peux utiliser cet outil chez vous pour pré-qualifier vos appels acquéreurs, et vous partager chaque mois notre veille sur les barèmes bancaires. »
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. STATION DE MISE À JOUR DES TAUX & EXPORT JSON NOTEBOOKLM -->
+            <section class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
+                <div class="mb-4">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded bg-sky-100 text-sky-900">Administration des Barèmes</span>
+                    <h3 class="text-base font-extrabold text-slate-900 mt-1">
+                        3. Paramètres des Taux &amp; Import JSON NotebookLM (Novembre 2026)
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <label class="block text-[10px] text-slate-500 uppercase font-bold">Taux 15 ans (%)</label>
+                        <input type="number" step="0.05" id="rate-15" value="3.55" oninput="calculateAll()"
+                            class="w-full mt-1 bg-transparent text-base font-extrabold text-slate-900 focus:outline-none">
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-brand">
+                        <label class="block text-[10px] text-brand uppercase font-bold">Taux 20 ans (%)</label>
+                        <input type="number" step="0.05" id="rate-20" value="3.60" oninput="calculateAll()"
+                            class="w-full mt-1 bg-transparent text-base font-extrabold text-slate-900 focus:outline-none">
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-brand">
+                        <label class="block text-[10px] text-brand uppercase font-bold">Taux 25 ans (%)</label>
+                        <input type="number" step="0.05" id="rate-25" value="3.70" oninput="calculateAll()"
+                            class="w-full mt-1 bg-transparent text-base font-extrabold text-slate-900 focus:outline-none">
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <label class="block text-[10px] text-slate-500 uppercase font-bold">Taux 27 ans (%)</label>
+                        <input type="number" step="0.05" id="rate-27" value="3.80" oninput="calculateAll()"
+                            class="w-full mt-1 bg-transparent text-base font-extrabold text-slate-900 focus:outline-none">
+                    </div>
+                    <div class="bg-rose-50/60 p-3 rounded-xl border border-rose-200">
+                        <label class="block text-[10px] text-rose-800 uppercase font-bold">Ass. Groupe (%)</label>
+                        <input type="number" step="0.01" id="rate-ins-group" value="0.40" oninput="calculateAll()"
+                            class="w-full mt-1 bg-transparent text-base font-extrabold text-rose-900 focus:outline-none">
+                    </div>
+                    <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-200">
+                        <label class="block text-[10px] text-emerald-800 uppercase font-bold">Délég. Lemoine (%)</label>
+                        <input type="number" step="0.01" id="rate-ins-lemoine" value="0.15" oninput="calculateAll()"
+                            class="w-full mt-1 bg-transparent text-base font-extrabold text-emerald-900 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                    <input type="text" id="json-rates-input" 
+                        placeholder='Coller JSON NotebookLM ex: {"taux15":3.55,"taux20":3.60,"taux25":3.70,"taux27":3.80,"assGroupe":0.40,"assLemoine":0.15}'
+                        class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 font-mono focus:outline-none focus:border-brand">
+                    <button onclick="importNotebookLMJson()" class="px-4 py-2.5 rounded-xl bg-brand text-white text-xs font-extrabold uppercase tracking-wider transition shrink-0">
+                        <i class="fa-solid fa-file-import mr-1.5"></i> Mettre à jour JSON
+                    </button>
+                </div>
+            </section>
+
+            <!-- 4. CRÉDIBILITÉ PÉDAGOGIQUE & CONFORMITÉ RGPD -->
+            <section class="bg-slate-100 rounded-2xl p-4 sm:p-5 border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-award text-brand"></i> Signature Pédagogique &amp; Relation École-Entreprise
+                    </h4>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        <strong>M. NGUON, enseignant pro en éco-gestion au Lycée Georges Brassens de Villepinte</strong> (Ex-Directeur d'agence bancaire &amp; Courtier).
+                    </p>
+                    <p class="text-[11px] text-emerald-700 font-semibold">
+                        <i class="fa-solid fa-lock mr-1"></i> 100% Conforme RGPD &amp; Marque Blanche : Votre nom s'affiche à l'écran pour rassurer le tuteur, mais s'efface automatiquement sur les impressions PDF et les résumés CRM remis aux clients de l'agence.
+                    </p>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION BAR (Portrait Smartphone First) -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] md:hidden no-print">
+        <div class="grid grid-cols-3 h-16">
+            <button onclick="switchTab('sim')" id="mob-tab-sim" class="flex flex-col items-center justify-center space-y-1 text-brand font-extrabold border-t-2 border-brand bg-blue-50/30">
+                <i class="fa-solid fa-calculator text-base"></i>
+                <span class="text-[10px]">Simulateur</span>
+            </button>
+            <button onclick="switchTab('news')" id="mob-tab-news" class="flex flex-col items-center justify-center space-y-1 text-slate-500 font-semibold relative">
+                <span class="absolute top-1.5 right-6 w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                <span class="absolute top-1.5 right-6 w-2 h-2 rounded-full bg-amber-500"></span>
+                <i class="fa-solid fa-newspaper text-base"></i>
+                <span class="text-[10px]">Actus Nov. 26</span>
+            </button>
+            <button onclick="switchTab('pitch')" id="mob-tab-pitch" class="flex flex-col items-center justify-center space-y-1 text-slate-500 font-semibold">
+                <i class="fa-solid fa-graduation-cap text-base"></i>
+                <span class="text-[10px]">Démo &amp; Pitch</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- PLACEMENT 3: SMART FOOTER WITH TEACHER SIGNATURE ON SCREEN (.no-print) & 100% WHITE-LABEL ON PRINT -->
+    <footer class="bg-slate-900 text-slate-400 text-xs mt-8 py-6 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+            <!-- Screen-only Teacher Signature & Tutor Contact Bar (Hidden on Print & Hidden in White-Label Mode) -->
+            <div id="footer-teacher-signature" class="pb-4 border-b border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 no-print">
+                <div class="flex items-start sm:items-center space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-300 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-200 font-bold">
+                            Conception &amp; Ingénierie : <span class="text-amber-300">M. NGUON, enseignant pro en éco-gestion au Lycée Georges Brassens de Villepinte</span>
+                        </p>
+                        <p class="text-[11px] text-slate-400">
+                            Ex-Directeur d'agence bancaire &amp; Courtier • Outil gratuit d'insertion professionnelle (PFMP Bac Pro MCV) • Conforme RGPD (aucune donnée collectée)
+                        </p>
+                    </div>
+                </div>
+                <a href="mailto:?subject=Accueil%20stagiaire%20Bac%20Pro%20MCV%20-%20Lyc%C3%A9e%20Georges%20Brassens%20Villepinte&body=Bonjour%20Monsieur%20Nguon,%0D%0A%0D%0ASuite%20%C3%A0%20la%20pr%C3%A9sentation%20de%20votre%20outil%20Qualif'Immo%202026,%20nous%20souhaiterions%20prendre%20contact%20avec%20vous%20pour%20accueillir%20un%20stagiaire%20de%20votre%20classe."
+                   class="px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-[11px] font-extrabold transition flex items-center gap-1.5 shrink-0 shadow-sm">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Contacter l'enseignant / Proposer un stage (PFMP)</span>
+                </a>
+            </div>
+
+            <!-- Regulatory Non-IOBSP Notice (Always visible on Screen & Print, 100% White-Label) -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-start sm:items-center space-x-3">
+                    <i class="fa-solid fa-scale-unbalanced text-slate-500 text-base mt-0.5 sm:mt-0"></i>
+                    <p class="leading-relaxed text-[11px]">
+                        <strong class="text-slate-200">Mentions Réglementaires &amp; RGPD :</strong> Simulation indicative non contractuelle basée sur les normes HCSF (plafond 35% assurance incluse) et le taux d'usure T4 2026 (5,40%). Ce document d'aide à la décision ne constitue ni une offre de prêt ni un acte d'intermédiation IOBSP. Aucune donnée personnelle n'est stockée.
+                    </p>
+                </div>
+                <div class="text-[11px] text-slate-400 shrink-0 text-right font-semibold" id="footer-right-label">
+                    Barèmes Novembre 2026
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- APPLICATION LOGIC -->
+    <script>
+        // Global State
+        let state = {
+            activeTab: 'sim',       // 'sim', 'news', 'pitch'
+            propertyType: 'ancien', // 'ancien' (8%) or 'neuf' (2.5%)
+            dpe: 'CDE',             // 'AB', 'CDE', 'FG'
+            duration: 25,           // 15, 20, 25, 27
+            theme: 'blue',
+            ratePreset: 'negocie',
+            whiteLabel: false       // false = Signature M. Nguon visible (Mode Pitch Directeur), true = Marque Blanche Client
+        };
+
+        // Psychological & Market Scripts (Updated November 2026)
+        const psychScripts = {
+            vendeur_nov26: {
+                soncas: "Argumentaire Vendeur Novembre 2026 • Hausse des taux (+0,50 pt depuis mai)",
+                quote: "« Depuis mai 2026, les taux ont repris +0,50 pt sous l'effet de l'OAT à 5,13 %, et les acheteurs gagnant moins de 40 000 €/an empruntent désormais à 4,07 % sur 25 ans. Ajuster votre prix aujourd'hui permet de capter les acquéreurs encore finançables avant le durcissement de fin d'année. »"
+            },
+            acheteur_nov26: {
+                soncas: "Argumentaire Acheteur Novembre 2026 • Fenêtre de tir avant la BCE du 17 décembre",
+                quote: "« Les banques prêtent actuellement autour de 3,60 % - 3,70 %, soit bien en dessous du taux d'emprunt de l'État français (5,13 %). Signer votre compromis maintenant permet de figer votre taux avant la réunion BCE du 17 décembre 2026, puis d'écraser le coût d'assurance dès le mois suivant avec la Loi Lemoine. »"
+            },
+            anxieux: {
+                soncas: "Mobile SONCAS : Sécurité • Peur du refus ou du surendettement",
+                quote: "« Il semble que vous attachiez une importance majeure à conserver un reste à vivre confortable. En activant la substitution Loi Lemoine (0,15 % au lieu de 0,40 %) et l'enveloppe bonifiée à 2,49 %, nous abaissons immédiatement votre mensualité sous le seuil de sécurité HCSF. »"
+            },
+            analytique: {
+                soncas: "Mobile SONCAS : Preuve par les chiffres • DPE & Taux d'usure T4 2026",
+                quote: "« Avec un TAEG estimé autour de 4,30 %, votre dossier dispose d'une marge de sécurité de plus de 1 point sous le taux d'usure T4 2026 fixé à 5,40 %. De plus, le nouveau coefficient électrique de 1,9 sécurise la classe énergétique du bien. »"
+            },
+            banquier: {
+                soncas: "Étiquetage Tactique (Chris Voss) face au Banquier • Obtenir le « C'est exact »",
+                quote: "« Il semble que votre véritable enjeu en cette fin d'année 2026 soit de respecter vos quotas HCSF tout en équipant de nouveaux clients à forte valeur ajoutée avant la clôture annuelle de votre agence. »"
+            }
+        };
+
+        // Theme Palettes
+        const themes = {
+            blue: { primary: '#1e40af', secondary: '#1d4ed8', light: '#eff6ff', border: '#bfdbfe', accent: '#3b82f6' },
+            red: { primary: '#b91c1c', secondary: '#dc2626', light: '#fef2f2', border: '#fecaca', accent: '#ef4444' },
+            gold: { primary: '#18181b', secondary: '#ca8a04', light: '#fefce8', border: '#fde047', accent: '#eab308' },
+            emerald: { primary: '#047857', secondary: '#059669', light: '#ecfdf5', border: '#a7f3d0', accent: '#10b981' }
+        };
+
+        // Switch Tabs (Simulator / Actus Nov 2026 / Pitch & Demo)
+        function switchTab(tabKey) {
+            state.activeTab = tabKey;
+            const tabs = ['sim', 'news', 'pitch'];
+            tabs.forEach(t => {
+                const content = document.getElementById('tab-content-' + t);
+                const deskBtn = document.getElementById('desk-tab-' + t);
+                const mobBtn = document.getElementById('mob-tab-' + t);
+
+                if (t === tabKey) {
+                    content.classList.remove('hidden');
+                    if (deskBtn) deskBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider transition flex items-center space-x-2 bg-white text-slate-900 shadow-sm";
+                    if (mobBtn) mobBtn.className = "flex flex-col items-center justify-center space-y-1 text-brand font-extrabold border-t-2 border-brand bg-blue-50/30 relative";
+                } else {
+                    content.classList.add('hidden');
+                    if (deskBtn) deskBtn.className = "px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition flex items-center space-x-2 text-white/90 hover:bg-white/15";
+                    if (mobBtn) mobBtn.className = "flex flex-col items-center justify-center space-y-1 text-slate-500 font-semibold relative";
+                }
+            });
+
+            // Show/hide mobile sticky verdict bar only on simulator tab
+            const mobSticky = document.getElementById('mobile-sticky-verdict');
+            if (mobSticky) {
+                if (tabKey === 'sim') {
+                    mobSticky.classList.remove('hidden');
+                } else {
+                    mobSticky.classList.add('hidden');
+                }
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Quick 1-Tap Lemoine Toggle from Mobile Sticky Header
+        function quickToggleLemoineMobile() {
+            const checkbox = document.getElementById('toggle-lemoine');
+            checkbox.checked = !checkbox.checked;
+            calculateAll();
+            if (checkbox.checked) {
+                showToast("Loi Lemoine activée : Dossier sauvé sous 35% !");
+            } else {
+                showToast("Assurance Groupe standard (0,40%) rétablie.", "fa-solid fa-rotate-left text-amber-400");
+            }
+        }
+
+        // Apply November 2026 Rate Presets
+        function applyRatePreset(presetKey) {
+            state.ratePreset = presetKey;
+            const presets = ['negocie', 'standard', 'excellent', 'auto_revenus'];
+            presets.forEach(p => {
+                const btn = document.getElementById('preset-' + p);
+                if (!btn) return;
+                if (p === presetKey) {
+                    btn.className = "px-3 py-2 rounded-xl text-[11px] font-extrabold border bg-brand text-white border-brand transition flex items-center justify-center gap-1";
+                } else {
+                    btn.className = "px-3 py-2 rounded-xl text-[11px] font-bold border bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 transition flex items-center justify-center gap-1";
+                }
+            });
+
+            if (presetKey === 'negocie') {
+                document.getElementById('rate-15').value = "3.55";
+                document.getElementById('rate-20').value = "3.60";
+                document.getElementById('rate-25').value = "3.70";
+                document.getElementById('rate-27').value = "3.80";
+                showToast("Grille Taux Négociés (Nov. 2026) appliquée : 3,70% sur 25 ans.");
+            } else if (presetKey === 'standard') {
+                document.getElementById('rate-15').value = "3.65";
+                document.getElementById('rate-20').value = "3.80";
+                document.getElementById('rate-25').value = "3.90";
+                document.getElementById('rate-27').value = "4.00";
+                showToast("Barème Standard (Nov. 2026) appliqué : 3,90% sur 25 ans.");
+            } else if (presetKey === 'excellent') {
+                document.getElementById('rate-15').value = "3.17";
+                document.getElementById('rate-20').value = "3.39";
+                document.getElementById('rate-25').value = "3.47";
+                document.getElementById('rate-27').value = "3.55";
+                showToast("Grille Top 10% / Hauts Revenus appliquée : 3,47% sur 25 ans.");
+            } else if (presetKey === 'auto_revenus') {
+                applyIncomeBasedRates();
+                showToast("Barème ajusté selon la tranche de revenus annuels du foyer !");
+            }
+            calculateAll();
+        }
+
+        // Toggle White-Label Client Mode ("Marque Blanche") vs Teacher Pitch Mode
+        function toggleWhiteLabelMode() {
+            setWhiteLabelMode(!state.whiteLabel);
+        }
+
+        function setWhiteLabelMode(isWhiteLabel) {
+            state.whiteLabel = isWhiteLabel;
+            const checkbox = document.getElementById('toggle-whitelabel');
+            if (checkbox && checkbox.checked !== isWhiteLabel) {
+                checkbox.checked = isWhiteLabel;
+            }
+
+            const topBanner = document.getElementById('student-pitch-banner');
+            const newsCallout = document.getElementById('news-signature-callout');
+            const footerSig = document.getElementById('footer-teacher-signature');
+            const headerBtnIcon = document.getElementById('header-whitelabel-icon');
+            const headerBtnText = document.getElementById('header-whitelabel-text');
+
+            if (isWhiteLabel) {
+                if (topBanner) topBanner.classList.add('hidden');
+                if (newsCallout) newsCallout.classList.add('hidden');
+                if (footerSig) footerSig.classList.add('hidden');
+                if (headerBtnIcon) headerBtnIcon.className = "fa-solid fa-eye-slash text-emerald-300";
+                if (headerBtnText) headerBtnText.textContent = "Mode Client (Neutre)";
+                showToast("Mode Client (Marque Blanche) activé : mention Lycée masquée.");
+            } else {
+                if (topBanner) topBanner.classList.remove('hidden');
+                if (newsCallout) newsCallout.classList.remove('hidden');
+                if (footerSig) footerSig.classList.remove('hidden');
+                if (headerBtnIcon) headerBtnIcon.className = "fa-solid fa-user-tie text-amber-300";
+                if (headerBtnText) headerBtnText.textContent = "Mode Pitch Tuteur";
+                showToast("Mode Pitch Directeur activé : signature M. NGUON visible.");
+            }
+        }
+
+        // Apply Income-Segmented Rates (November 2026 NotebookLM Table)
+        function applyIncomeBasedRates() {
+            const monthlyIncome = parseFloat(document.getElementById('input-income').value) || 0;
+            const annualIncome = monthlyIncome * 12;
+            if (annualIncome < 40000) {
+                document.getElementById('rate-15').value = "3.74";
+                document.getElementById('rate-20').value = "3.91";
+                document.getElementById('rate-25').value = "4.07";
+                document.getElementById('rate-27').value = "4.20";
+            } else if (annualIncome < 80000) {
+                document.getElementById('rate-15').value = "3.66";
+                document.getElementById('rate-20').value = "3.85";
+                document.getElementById('rate-25').value = "3.97";
+                document.getElementById('rate-27').value = "4.10";
+            } else if (annualIncome <= 120000) {
+                document.getElementById('rate-15').value = "3.61";
+                document.getElementById('rate-20').value = "3.80";
+                document.getElementById('rate-25').value = "3.82";
+                document.getElementById('rate-27').value = "3.95";
+            } else {
+                document.getElementById('rate-15').value = "3.37";
+                document.getElementById('rate-20').value = "3.47";
+                document.getElementById('rate-25').value = "3.53";
+                document.getElementById('rate-27').value = "3.68";
+            }
+        }
+
+        // Toast Helper
+        function showToast(message, iconClass = "fa-solid fa-circle-check text-emerald-400") {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-message');
+            const iconEl = document.getElementById('toast-icon');
+            msgEl.textContent = message;
+            iconEl.className = iconClass + " text-lg shrink-0";
+            toast.classList.remove('hidden', '-translate-y-2', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('-translate-y-2', 'opacity-0');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 3000);
+        }
+
+        // Synchronize Slider and Number Input
+        function syncInputs(field, value) {
+            const numInput = document.getElementById('input-' + field);
+            const sliderInput = document.getElementById('slider-' + field);
+            if (numInput && numInput.value !== value) numInput.value = value;
+            if (sliderInput && sliderInput.value !== value) sliderInput.value = value;
+            if (field === 'income' && state.ratePreset === 'auto_revenus') {
+                applyIncomeBasedRates();
+            }
+            calculateAll();
+        }
+
+        // Set Property Type (Ancien vs Neuf)
+        function setPropertyType(type) {
+            state.propertyType = type;
+            const btnAncien = document.getElementById('btn-type-ancien');
+            const btnNeuf = document.getElementById('btn-type-neuf');
+            const badge = document.getElementById('notary-badge');
+
+            if (type === 'ancien') {
+                btnAncien.className = "min-h-[42px] py-2 px-3 rounded-xl text-xs font-extrabold border transition flex items-center justify-center gap-1.5 bg-brand text-white border-brand";
+                btnNeuf.className = "min-h-[42px] py-2 px-3 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1.5 bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100";
+                badge.textContent = "Frais ~8%";
+            } else {
+                btnNeuf.className = "min-h-[42px] py-2 px-3 rounded-xl text-xs font-extrabold border transition flex items-center justify-center gap-1.5 bg-brand text-white border-brand";
+                btnAncien.className = "min-h-[42px] py-2 px-3 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1.5 bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100";
+                badge.textContent = "Frais ~2.5%";
+            }
+            calculateAll();
+        }
+
+        // Set DPE Class
+        function setDPE(dpeClass) {
+            state.dpe = dpeClass;
+            const classes = ['AB', 'CDE', 'FG'];
+            classes.forEach(c => {
+                const btn = document.getElementById('dpe-' + c);
+                if (c === dpeClass) {
+                    if (c === 'AB') btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-extrabold border border-emerald-600 bg-emerald-600 text-white shadow-sm";
+                    if (c === 'CDE') btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-extrabold border border-amber-500 bg-amber-500 text-white shadow-sm";
+                    if (c === 'FG') btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-extrabold border border-rose-600 bg-rose-600 text-white shadow-sm";
+                } else {
+                    if (c === 'AB') btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold border border-emerald-300 bg-emerald-50 text-emerald-800";
+                    if (c === 'CDE') btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold border border-amber-300 bg-amber-50 text-amber-800";
+                    if (c === 'FG') btn.className = "px-2.5 py-1.5 rounded-lg text-xs font-bold border border-rose-300 bg-rose-50 text-rose-800";
+                }
+            });
+            calculateAll();
+        }
+
+        // Set Loan Duration
+        function setDuration(years) {
+            state.duration = years;
+            [15, 20, 25, 27].forEach(y => {
+                const btn = document.getElementById('dur-' + y);
+                if (y === years) {
+                    btn.className = "min-h-[44px] py-1.5 rounded-xl text-xs font-extrabold border bg-brand text-white border-brand transition relative";
+                } else {
+                    btn.className = "min-h-[44px] py-1.5 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition relative";
+                }
+            });
+            calculateAll();
+        }
+
+        // Rescue Button: Calibrate 10% Works & Switch to 27 Years
+        function activate27YearsRescue() {
+            const price = parseFloat(document.getElementById('input-price').value) || 0;
+            const currentWorks = parseFloat(document.getElementById('input-works').value) || 0;
+            const minWorksNeeded = Math.ceil((price * 0.115) / 1000) * 1000;
+            if (currentWorks < minWorksNeeded) {
+                syncInputs('works', minWorksNeeded);
+            }
+            setDuration(27);
+            showToast("Travaux calibrés à ≥10% et durée étendue à 27 ans !", "fa-solid fa-wand-magic-sparkles text-indigo-400");
+        }
+
+        // Update Agency Customization & Save to LocalStorage
+        function updateAgencyBranding() {
+            const agencyName = document.getElementById('custom-agency-name').value.trim() || "Agence Partenaire";
+            const agencyCity = document.getElementById('custom-agency-city').value.trim() || "Secteur Local";
+            const studentName = document.getElementById('custom-student-name').value.trim();
+
+            document.getElementById('header-agency-badge').textContent = `${agencyName} • ${agencyCity}`;
+            document.getElementById('footer-right-label').textContent = `${agencyName} (${agencyCity}) • Barèmes Nov. 2026`;
+
+            document.getElementById('student-banner-title').textContent = `Outil configuré pour ${agencyName} (${agencyCity})`;
+            document.getElementById('student-banner-badge').textContent = studentName ? `Présenté par ${studentName}` : `Démo Stage PFMP`;
+
+            try {
+                localStorage.setItem('qualifimmo_agency_nov26', JSON.stringify({
+                    agencyName, agencyCity, studentName, theme: state.theme
+                }));
+            } catch (e) {}
+        }
+
+        // Set Color Theme
+        function setTheme(themeKey) {
+            state.theme = themeKey;
+            const p = themes[themeKey] || themes.blue;
+            const root = document.documentElement;
+            root.style.setProperty('--brand-primary', p.primary);
+            root.style.setProperty('--brand-secondary', p.secondary);
+            root.style.setProperty('--brand-light', p.light);
+            root.style.setProperty('--brand-border', p.border);
+            root.style.setProperty('--brand-accent', p.accent);
+            updateAgencyBranding();
+        }
+
+        // Import JSON from NotebookLM
+        function importNotebookLMJson() {
+            const raw = document.getElementById('json-rates-input').value.trim();
+            if (!raw) {
+                showToast("Veuillez coller un bloc JSON valide.", "fa-solid fa-circle-exclamation text-amber-400");
+                return;
+            }
+            try {
+                const data = JSON.parse(raw);
+                if (data.taux15) document.getElementById('rate-15').value = data.taux15;
+                if (data.taux20) document.getElementById('rate-20').value = data.taux20;
+                if (data.taux25) document.getElementById('rate-25').value = data.taux25;
+                if (data.taux27) document.getElementById('rate-27').value = data.taux27;
+                if (data.assGroupe) document.getElementById('rate-ins-group').value = data.assGroupe;
+                if (data.assLemoine) document.getElementById('rate-ins-lemoine').value = data.assLemoine;
+                calculateAll();
+                showToast("Barèmes NotebookLM mis à jour avec succès !");
+            } catch (err) {
+                showToast("Format JSON invalide. Vérifiez la syntaxe.", "fa-solid fa-triangle-exclamation text-rose-400");
+            }
+        }
+
+        // Format Currency
+        function fmtEUR(val) {
+            return Math.round(val).toLocaleString('fr-FR') + ' €';
+        }
+
+        // Monthly Payment Formula (Credit only)
+        function calcMonthlyCredit(principal, annualRatePercent, years) {
+            if (principal <= 0) return 0;
+            const r = (annualRatePercent / 100) / 12;
+            const n = years * 12;
+            if (r === 0) return principal / n;
+            return principal * (r / (1 - Math.pow(1 + r, -n)));
+        }
+
+        // Principal from Monthly Payment
+        function calcPrincipalFromMonthly(monthlyAllowed, annualRatePercent, insRatePercent, years) {
+            if (monthlyAllowed <= 0) return 0;
+            const r = (annualRatePercent / 100) / 12;
+            const n = years * 12;
+            const creditFactor = r / (1 - Math.pow(1 + r, -n));
+            const insFactor = (insRatePercent / 100) / 12;
+            return monthlyAllowed / (creditFactor + insFactor);
+        }
+
+        // Main Financial & Engineering Engine (Updated for November 2026)
+        function calculateAll() {
+            // 1. Read Inputs
+            const income = parseFloat(document.getElementById('input-income').value) || 0;
+            const annualIncome = income * 12;
+            const status = document.getElementById('input-status').value;
+            const currentRent = parseFloat(document.getElementById('input-rent').value) || 0;
+            const rawDebts = parseFloat(document.getElementById('input-debts').value) || 0;
+            const downpayment = parseFloat(document.getElementById('input-downpayment').value) || 0;
+
+            const price = parseFloat(document.getElementById('input-price').value) || 0;
+            const works = parseFloat(document.getElementById('input-works').value) || 0;
+            const isElectricDpe = document.getElementById('check-electric-dpe').checked;
+
+            const useLemoine = document.getElementById('toggle-lemoine').checked;
+            const useBoostLoan = document.getElementById('toggle-boost-loan').checked;
+            const clearDebt = document.getElementById('toggle-clear-debt').checked;
+
+            // Update Annual Income Badge & Apport %
+            document.getElementById('income-bracket-badge').textContent = `Revenus : ${fmtEUR(annualIncome)}/an`;
+            const apportPct = price > 0 ? (downpayment / price) * 100 : 0;
+            document.getElementById('apport-pct-label').textContent = `Soit ${apportPct.toFixed(1)}% du prix du bien`;
+
+            // 2. Read Rates (November 2026 defaults)
+            const rates = {
+                15: parseFloat(document.getElementById('rate-15').value) || 3.55,
+                20: parseFloat(document.getElementById('rate-20').value) || 3.60,
+                25: parseFloat(document.getElementById('rate-25').value) || 3.70,
+                27: parseFloat(document.getElementById('rate-27').value) || 3.85
+            };
+            const rateInsGroup = parseFloat(document.getElementById('rate-ins-group').value) || 0.40;
+            const rateInsLemoine = parseFloat(document.getElementById('rate-ins-lemoine').value) || 0.15;
+
+            // 3. Notary Fees & Total Operation
+            const notaryRate = state.propertyType === 'ancien' ? 0.08 : 0.025;
+            const notaryFees = price * notaryRate;
+            const totalProjectCost = price + notaryFees + works;
+
+            const activeDebts = clearDebt ? 0 : rawDebts;
+            const principal = Math.max(0, totalProjectCost - downpayment);
+
+            // 4. Current Rate & Boosted Mutualist Loan (35,000 € at 2.49%)
+            const baseNominalRate = rates[state.duration] || 3.70;
+            const boostAmount = (useBoostLoan && principal > 35000) ? 35000 : 0;
+            const boostRate = 2.49;
+            const mainLoanAmount = Math.max(0, principal - boostAmount);
+
+            // Weighted Nominal Rate for display
+            const effectiveNominalRate = principal > 0
+                ? ((mainLoanAmount * baseNominalRate) + (boostAmount * boostRate)) / principal
+                : baseNominalRate;
+
+            const activeInsRate = useLemoine ? rateInsLemoine : rateInsGroup;
+
+            // 5. Calculate Monthly Payment (Main Credit + Boosted Credit + Insurance)
+            const monthlyCreditMain = calcMonthlyCredit(mainLoanAmount, baseNominalRate, state.duration);
+            const monthlyCreditBoost = calcMonthlyCredit(boostAmount, boostRate, state.duration);
+            const monthlyCredit = monthlyCreditMain + monthlyCreditBoost;
+
+            const monthlyInsGroup = (principal * (rateInsGroup / 100)) / 12;
+            const monthlyInsLemoine = (principal * (rateInsLemoine / 100)) / 12;
+            const activeMonthlyIns = useLemoine ? monthlyInsLemoine : monthlyInsGroup;
+
+            const totalMonthlyLoan = monthlyCredit + activeMonthlyIns;
+            const totalMonthlyCharges = totalMonthlyLoan + activeDebts;
+
+            // 6. HCSF Debt Ratio, Reste à Vivre & Saut de Charge
+            const debtRatio = income > 0 ? (totalMonthlyCharges / income) * 100 : 100;
+            const livingLeft = income - totalMonthlyCharges;
+            const paymentJump = totalMonthlyLoan - currentRent;
+
+            // 7. TAEG & Usury Rate Check (T4 2026: 5.40% for >=20y, 4.68% for <20y)
+            const usuryCeiling = state.duration >= 20 ? 5.40 : 4.68;
+            const estimatedTaeg = effectiveNominalRate + activeInsRate + 0.22; // +0.22% guarantee/fees approx
+            const usuryMargin = usuryCeiling - estimatedTaeg;
+            const usureEl = document.getElementById('taeg-usure-status');
+            if (usuryMargin >= 0) {
+                usureEl.innerHTML = `<i class="fa-solid fa-shield-check text-emerald-600"></i> TAEG estimé : <strong>${estimatedTaeg.toFixed(2)}%</strong> (Usure T4 2026 : <strong>${usuryCeiling.toFixed(2)}%</strong> — Marge : +${usuryMargin.toFixed(2)} pt)`;
+            } else {
+                usureEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-600"></i> <span class="text-rose-700">Alerte Usure : TAEG <strong>${estimatedTaeg.toFixed(2)}%</strong> &gt; Plafond <strong>${usuryCeiling.toFixed(2)}%</strong> (Activez Lemoine !)</span>`;
+            }
+            document.getElementById('effective-rate-pill').textContent = useBoostLoan
+                ? `Taux pondéré : ${effectiveNominalRate.toFixed(2)}%`
+                : `Taux nominal : ${baseNominalRate.toFixed(2)}%`;
+
+            // 8. Max Purchasing Capacity at 35% HCSF
+            const maxAllowedTotalCharges = income * 0.35;
+            const maxAllowedLoanPayment = Math.max(0, maxAllowedTotalCharges - activeDebts);
+            const maxPrincipal = calcPrincipalFromMonthly(maxAllowedLoanPayment, effectiveNominalRate, activeInsRate, state.duration);
+            const maxPropertyPrice = Math.max(0, (maxPrincipal + downpayment - works) / (1 + notaryRate));
+
+            // 9. Update KPI Cards
+            document.getElementById('kpi-debt-ratio').textContent = debtRatio.toFixed(1) + '%';
+            document.getElementById('kpi-monthly-payment').textContent = fmtEUR(totalMonthlyLoan);
+            document.getElementById('kpi-monthly-detail').innerHTML = `Dont <strong>${fmtEUR(activeMonthlyIns)}</strong> ass. (${effectiveNominalRate.toFixed(2)}% / ${state.duration}a)`;
+
+            document.getElementById('kpi-payment-jump').textContent = (paymentJump >= 0 ? '+' : '') + fmtEUR(paymentJump);
+            document.getElementById('kpi-living-left').textContent = fmtEUR(livingLeft);
+
+            const jumpBadge = document.getElementById('jump-badge');
+            if (paymentJump > 480) {
+                jumpBadge.className = "text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-800";
+                jumpBadge.textContent = "Saut élevé";
+            } else if (paymentJump > 280) {
+                jumpBadge.className = "text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800";
+                jumpBadge.textContent = "À argumenter";
+            } else {
+                jumpBadge.className = "text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+                jumpBadge.textContent = "Maîtrisé";
+            }
+
+            document.getElementById('kpi-loan-amount').textContent = fmtEUR(principal);
+            document.getElementById('kpi-notary-eur').textContent = fmtEUR(notaryFees);
+            document.getElementById('kpi-max-price').textContent = fmtEUR(maxPropertyPrice);
+            document.getElementById('kpi-max-monthly').textContent = fmtEUR(maxAllowedLoanPayment);
+
+            // 10. Update Main Traffic Light Verdict Card & Mobile Sticky Bar
+            const verdictCard = document.getElementById('verdict-card');
+            const verdictIconBox = document.getElementById('verdict-icon-box');
+            const verdictIcon = document.getElementById('verdict-icon');
+            const verdictBadge = document.getElementById('verdict-badge');
+            const verdictTitle = document.getElementById('verdict-title');
+            const verdictSubtitle = document.getElementById('verdict-subtitle');
+            const kpiDebtRatioEl = document.getElementById('kpi-debt-ratio');
+            const progressBar = document.getElementById('debt-progress-bar');
+            const optPill = document.getElementById('active-optimizations-pill');
+
+            // Mobile Sticky Elements
+            const mobDot = document.getElementById('mob-verdict-dot');
+            const mobIcon = document.getElementById('mob-verdict-icon');
+            const mobRatio = document.getElementById('mob-debt-ratio');
+            const mobMonthly = document.getElementById('mob-monthly');
+            const mobLabel = document.getElementById('mob-verdict-label');
+            const mobLemoineBtn = document.getElementById('mob-lemoine-btn');
+            const mobLemoineText = document.getElementById('mob-lemoine-btn-text');
+
+            mobRatio.textContent = debtRatio.toFixed(1) + '%';
+            mobMonthly.textContent = fmtEUR(totalMonthlyLoan) + '/m';
+
+            if (useLemoine) {
+                mobLemoineBtn.className = "px-2.5 py-1.5 rounded-lg bg-emerald-600 border border-emerald-400 text-[11px] font-extrabold text-white flex items-center space-x-1 shrink-0 active:scale-95 transition";
+                mobLemoineText.textContent = "Lemoine: ON";
+            } else {
+                mobLemoineBtn.className = "px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-600 text-[11px] font-extrabold text-emerald-400 flex items-center space-x-1 shrink-0 active:scale-95 transition";
+                mobLemoineText.textContent = "Lemoine: OFF";
+            }
+
+            if (useLemoine || useBoostLoan || clearDebt || state.duration === 27) {
+                optPill.classList.remove('hidden');
+            } else {
+                optPill.classList.add('hidden');
+            }
+
+            const progressWidth = Math.min(100, Math.max(10, (debtRatio / 50) * 100));
+            progressBar.style.width = progressWidth + '%';
+
+            if (debtRatio <= 35.0) {
+                verdictCard.className = "rounded-2xl p-4 sm:p-6 border-2 transition-all duration-300 shadow-sm print-shadow-none bg-emerald-50/90 border-emerald-400";
+                verdictIconBox.className = "w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md shrink-0";
+                verdictIcon.className = "fa-solid fa-circle-check";
+                verdictBadge.className = "text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-200 text-emerald-950";
+                verdictBadge.textContent = "Feu Vert HCSF (≤ 35%)";
+                verdictTitle.textContent = "Dossier Finançable — Bon pour Visite & Compromis";
+                verdictSubtitle.textContent = "Taux d'effort conforme aux normes HCSF (≤ 35%) et sous le plafond d'usure T4 2026.";
+                kpiDebtRatioEl.className = "text-2xl sm:text-3xl font-black text-emerald-600";
+                progressBar.className = "h-full bg-emerald-500 rounded-full transition-all duration-300";
+
+                mobDot.className = "w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm font-bold shrink-0 shadow";
+                mobIcon.className = "fa-solid fa-check";
+                mobRatio.className = "text-sm font-black text-emerald-400";
+                mobLabel.textContent = "Feu Vert HCSF • Client finançable !";
+            } else if (debtRatio <= 37.2) {
+                verdictCard.className = "rounded-2xl p-4 sm:p-6 border-2 transition-all duration-300 shadow-sm print-shadow-none bg-amber-50/90 border-amber-400";
+                verdictIconBox.className = "w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md shrink-0";
+                verdictIcon.className = "fa-solid fa-triangle-exclamation";
+                verdictBadge.className = "text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-950";
+                verdictBadge.textContent = "Dossier Tangent (35% - 37%)";
+                verdictTitle.textContent = "Dépassement HCSF Léger — Sauvetage Possible en 1 Clic";
+                verdictSubtitle.textContent = "Activez la délégation Loi Lemoine, le prêt bonifié à 2,49% ou l'étalement 27 ans ci-dessous pour repasser sous 35%.";
+                kpiDebtRatioEl.className = "text-2xl sm:text-3xl font-black text-amber-600";
+                progressBar.className = "h-full bg-amber-500 rounded-full transition-all duration-300";
+
+                mobDot.className = "w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center text-sm font-bold shrink-0 shadow";
+                mobIcon.className = "fa-solid fa-triangle-exclamation";
+                mobRatio.className = "text-sm font-black text-amber-400";
+                mobLabel.textContent = "Dossier tendu • Cliquez sur Lemoine →";
+            } else {
+                verdictCard.className = "rounded-2xl p-4 sm:p-6 border-2 transition-all duration-300 shadow-sm print-shadow-none bg-rose-50/90 border-rose-400";
+                verdictIconBox.className = "w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-rose-600 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md shrink-0";
+                verdictIcon.className = "fa-solid fa-hand";
+                verdictBadge.className = "text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-rose-200 text-rose-950";
+                verdictBadge.textContent = "Alerte HCSF (> 37%)";
+                verdictTitle.textContent = "Hors Normes HCSF — Ajustement Prix ou Apport Requis";
+                verdictSubtitle.textContent = `Le budget max finançable à 35% pour ce profil est de ${fmtEUR(maxPropertyPrice)} FAI.`;
+                kpiDebtRatioEl.className = "text-2xl sm:text-3xl font-black text-rose-600";
+                progressBar.className = "h-full bg-rose-600 rounded-full transition-all duration-300";
+
+                mobDot.className = "w-8 h-8 rounded-lg bg-rose-600 text-white flex items-center justify-center text-sm font-bold shrink-0 shadow";
+                mobIcon.className = "fa-solid fa-xmark";
+                mobRatio.className = "text-sm font-black text-rose-400";
+                mobLabel.textContent = `Max finançable : ${fmtEUR(maxPropertyPrice)} FAI`;
+            }
+
+            // 11. Update Lever 1: Loi Lemoine Impact
+            const monthlySavingsLemoine = monthlyInsGroup - monthlyInsLemoine;
+            const totalSavingsLemoine = monthlySavingsLemoine * state.duration * 12;
+            const ratioGainLemoine = income > 0 ? (monthlySavingsLemoine / income) * 100 : 0;
+            document.getElementById('lemoine-gain-badge').textContent = `Gain : -${ratioGainLemoine.toFixed(1)} pt d'endettement`;
+            document.getElementById('lemoine-desc').innerHTML = `Passage du contrat groupe (${rateInsGroup.toFixed(2)}%) à une délégation (${rateInsLemoine.toFixed(2)}%) : réduit la mensualité de <strong>${fmtEUR(monthlySavingsLemoine)}/mois</strong> et économise <strong>${fmtEUR(totalSavingsLemoine)}</strong> sur ${state.duration} ans.`;
+
+            // 12. Update Lever 2: Boosted Mutualist Loan Impact
+            const monthlyWithoutBoost = calcMonthlyCredit(principal, baseNominalRate, state.duration);
+            const monthlyWithBoost = calcMonthlyCredit(Math.max(0, principal - 35000), baseNominalRate, state.duration) + calcMonthlyCredit(Math.min(principal, 35000), 2.49, state.duration);
+            const boostMonthlySavings = Math.max(0, monthlyWithoutBoost - monthlyWithBoost);
+            document.getElementById('boost-gain-badge').textContent = `Économie : -${fmtEUR(boostMonthlySavings)}/mois`;
+
+            // 13. Update Lever 3: 27 Years (10% works threshold)
+            const worksRatio = (price + works) > 0 ? (works / (price + works)) * 100 : 0;
+            const lever27Badge = document.getElementById('lever27-status-badge');
+            const lever27Desc = document.getElementById('lever27-desc');
+            if (worksRatio >= 10) {
+                lever27Badge.className = "text-xs font-bold text-emerald-700";
+                lever27Badge.textContent = `Éligible 27 ans (Travaux = ${worksRatio.toFixed(1)}%)`;
+                lever27Desc.innerHTML = `Le projet inclut <strong>${fmtEUR(works)}</strong> de travaux (&ge; 10%). L'acquéreur peut amortir sur 27 ans pour abaisser son taux d'effort.`;
+            } else {
+                const neededWorks = Math.max(0, Math.ceil(((price * 0.112) - works) / 500) * 500);
+                lever27Badge.className = "text-xs font-bold text-indigo-700";
+                lever27Badge.textContent = `Actuel : ${worksRatio.toFixed(1)}% (Seuil 10%)`;
+                lever27Desc.innerHTML = `Ajoutez environ <strong>${fmtEUR(neededWorks)}</strong> de travaux de rénovation pour atteindre 10% et débloquer un prêt sur <strong>27 ans</strong>.`;
+            }
+
+            // 14. Update Lever 4: Debt Clearing
+            const debtRatioPoints = income > 0 ? (rawDebts / income) * 100 : 0;
+            document.getElementById('debt-gain-badge').textContent = `Gain : -${debtRatioPoints.toFixed(1)} pts d'endettement`;
+            document.getElementById('debt-lever-desc').innerHTML = rawDebts > 0
+                ? `Solder les <strong>${fmtEUR(rawDebts)}/mois</strong> de crédits en cours libère immédiatement <strong>${debtRatioPoints.toFixed(1)} points</strong> d'endettement HCSF.`
+                : `Aucun crédit annexe en cours déclaré sur ce dossier.`;
+
+            // 15. DPE 2026 Electric Alert
+            const dpeAlert = document.getElementById('dpe-2026-alert');
+            if (isElectricDpe && state.dpe === 'FG') {
+                dpeAlert.classList.remove('hidden');
+            } else {
+                dpeAlert.classList.add('hidden');
+            }
+
+            // 16. Update Banking Radar Nov. 2026
+            renderBankRadar(status, state.dpe, worksRatio, apportPct);
+        }
+
+        // Dynamic Banking Radar (Updated November 2026)
+        function renderBankRadar(status, dpe, worksRatio, apportPct) {
+            const container = document.getElementById('bank-radar-container');
+            let cards = [];
+
+            if (status === 'secundo') {
+                cards.push({
+                    bank: "BNP Paribas / SG / LCL",
+                    tag: "Clause Transfert de Prêt",
+                    color: "border-indigo-300 bg-indigo-50/70",
+                    icon: "fa-right-left text-indigo-600",
+                    text: "Seules ces 3 banques maintiennent la transférabilité de prêt en nov. 2026 : l'acquéreur conserve son ancien taux bas sur son nouveau bien !"
+                });
+            } else if (dpe === 'AB' || worksRatio >= 10) {
+                cards.push({
+                    bank: "Crédit Agricole & Société Générale",
+                    tag: "Prêt Bonifié 2,49% / ESG",
+                    color: "border-emerald-300 bg-emerald-50/70",
+                    icon: "fa-leaf text-emerald-600",
+                    text: "Cumulez l'enveloppe bonifiée à 2,49% (jusqu'à 50 000 € au CA) ou la bonification DPE A/B (-0,20 pt) avec les dérogations HCSF."
+                });
+            } else {
+                cards.push({
+                    bank: "Crédit Mutuel & Caisse d'Épargne",
+                    tag: "Enveloppes 2,55% à 2,75%",
+                    color: "border-sky-300 bg-sky-50/70",
+                    icon: "fa-piggy-bank text-sky-600",
+                    text: "Mobilisez les prêts complémentaires bonifiés de novembre 2026 (jusqu'à 40 000 € à 2,55%) pour écraser le taux moyen du crédit."
+                });
+            }
+
+            if (status === 'expat') {
+                cards.push({
+                    bank: "Pôles Non-Résidents (3,70% - 4,00%)",
+                    tag: "Expatriés Nov. 2026",
+                    color: "border-amber-300 bg-amber-50/70",
+                    icon: "fa-earth-europe text-amber-600",
+                    text: `Apport actuel : ${apportPct.toFixed(0)}%. Attention : les banques exigent 20% à 30% d'apport hors frais (40% hors UE) + nantissement.`
+                });
+            } else if (status === 'cdd3') {
+                cards.push({
+                    bank: "CIC — Nouvelles Formes d'Emploi",
+                    tag: "CDD / Intérim > 3 ans",
+                    color: "border-purple-300 bg-purple-50/70",
+                    icon: "fa-briefcase text-purple-600",
+                    text: "Le scoring CIC valide les profils CDD/Intérim justifiant de 3 ans d'ancienneté continue dans le même secteur."
+                });
+            } else if (status === 'indep') {
+                cards.push({
+                    bank: "Banques Régionales (Éviter Banques en Ligne)",
+                    tag: "Chef d'entreprise / SCI",
+                    color: "border-amber-300 bg-amber-50/70",
+                    icon: "fa-network-wired text-amber-600",
+                    text: "BoursoBank et Fortuneo rejettent automatiquement les SCI et revenus variables. Ciblez une banque régionale avec délégation locale."
+                });
+            } else {
+                cards.push({
+                    bank: "BoursoBank / Fortuneo (Si Apport ≥ 10%)",
+                    tag: "0 € Frais de dossier",
+                    color: "border-slate-300 bg-slate-50",
+                    icon: "fa-bolt text-amber-500",
+                    text: `Apport actuel : ${apportPct.toFixed(1)}%. Économie de 800 à 1 200 € de frais de dossier pour les CDI avec au moins 10% d'apport.`
+                });
+            }
+
+            container.innerHTML = cards.map(c => `
+                <div class="p-3.5 rounded-xl border ${c.color}">
+                    <div class="flex items-center justify-between gap-1 mb-1">
+                        <span class="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                            <i class="fa-solid ${c.icon}"></i> ${c.bank}
+                        </span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white/90 text-slate-700 border border-slate-200 shrink-0">${c.tag}</span>
+                    </div>
+                    <p class="text-[11px] text-slate-700 leading-relaxed mt-1">${c.text}</p>
+                </div>
+            `).join('');
+        }
+
+        // Update Psychological Script
+        function updatePsychScript() {
+            const key = document.getElementById('psych-profile').value;
+            const item = psychScripts[key] || psychScripts.vendeur_nov26;
+            document.getElementById('psych-soncas').textContent = item.soncas;
+            document.getElementById('psych-script').textContent = item.quote;
+        }
+
+        // Reset Default Case (Calibrated for November 2026: 36.3% Orange -> 34.9% Green with Lemoine!)
+        function resetDefaultCase() {
+            syncInputs('income', 3750);
+            document.getElementById('input-status').value = 'cdi';
+            document.getElementById('input-rent').value = 950;
+            document.getElementById('input-debts').value = 0;
+            syncInputs('downpayment', 35000);
+            syncInputs('price', 250000);
+            syncInputs('works', 15000);
+            document.getElementById('check-electric-dpe').checked = false;
+            document.getElementById('toggle-lemoine').checked = false;
+            document.getElementById('toggle-boost-loan').checked = false;
+            document.getElementById('toggle-clear-debt').checked = false;
+            setPropertyType('ancien');
+            setDPE('CDE');
+            setDuration(25);
+            applyRatePreset('negocie');
+            showToast("Cas de démo Novembre 2026 réinitialisé (36,3% → Activez Lemoine !).");
+        }
+
+        // Copy Structured CRM Summary to Clipboard
+        function copyCrmReport() {
+            const agency = document.getElementById('custom-agency-name').value || "Agence";
+            const income = document.getElementById('input-income').value;
+            const price = document.getElementById('input-price').value;
+            const works = document.getElementById('input-works').value;
+            const downpayment = document.getElementById('input-downpayment').value;
+            const ratio = document.getElementById('kpi-debt-ratio').textContent;
+            const monthly = document.getElementById('kpi-monthly-payment').textContent;
+            const jump = document.getElementById('kpi-payment-jump').textContent;
+            const living = document.getElementById('kpi-living-left').textContent;
+            const maxPrice = document.getElementById('kpi-max-price').textContent;
+            const verdict = document.getElementById('verdict-title').textContent;
+
+            const reportText = [
+                `=== SYNTHÈSE PRÉ-QUALIFICATION ACQUÉREUR (${agency.toUpperCase()} - NOVEMBRE 2026) ===`,
+                `• Verdict HCSF Nov. 2026 : ${verdict}`,
+                `• Revenus nets foyer : ${income} €/mois | Apport : ${downpayment} €`,
+                `• Projet : Bien à ${price} € FAI (${state.propertyType.toUpperCase()}) + Travaux ${works} € | DPE : ${state.dpe}`,
+                `• Durée retenue : ${state.duration} ans`,
+                `• Taux d'endettement : ${ratio} (Plafond HCSF : 35% | Usure T4 2026 : 5,40%)`,
+                `• Mensualité estimée : ${monthly}/mois (Saut de charge : ${jump} | Reste à vivre : ${living})`,
+                `• Enveloppe d'achat max HCSF (35%) : ${maxPrice} FAI`,
+                `• Leviers activés : Loi Lemoine (${document.getElementById('toggle-lemoine').checked ? 'OUI' : 'NON'}) | Prêt Bonifié 2,49% (${document.getElementById('toggle-boost-loan').checked ? 'OUI' : 'NON'})`,
+                `------------------------------------------------------------`,
+                `Simulation indicative non contractuelle (Barèmes Novembre 2026).`
+            ].join('\n');
+
+            const textarea = document.createElement('textarea');
+            textarea.value = reportText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast("Synthèse Novembre 2026 copiée pour le CRM !");
+            } catch (err) {
+                showToast("Impossible de copier automatiquement.", "fa-solid fa-circle-exclamation text-amber-400");
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // Load Saved Agency Branding on Startup
+        window.onload = function () {
+            try {
+                const saved = localStorage.getItem('qualifimmo_agency_nov26');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.agencyName) document.getElementById('custom-agency-name').value = parsed.agencyName;
+                    if (parsed.agencyCity) document.getElementById('custom-agency-city').value = parsed.agencyCity;
+                    if (parsed.studentName) document.getElementById('custom-student-name').value = parsed.studentName;
+                    if (parsed.theme) setTheme(parsed.theme);
+                }
+            } catch (e) {}
+            calculateAll();
+        };
+    </script>
+</body>
+</html>
