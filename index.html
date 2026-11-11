@@ -3528,7 +3528,7 @@
         // CONFIGURATION
         // Adresse e-mail du professeur pour les boutons « Contacter ».
         // Tant qu'elle est vide, les boutons de contact restent masqués.
-        const CONTACT_EMAIL = '';
+        const CONTACT_EMAIL = 'r.nguon75@gmail.com';
         // ================================================================
 
         let state = {
@@ -3839,7 +3839,7 @@
         function updateAgencyBranding() {
             const agencyName = $('custom-agency-name').value.trim() || "votre agence immobilière";
             const agencyCity = $('custom-agency-city').value.trim();
-            const studentName = $('custom-student-name').value.trim();
+            const studentName = $('custom-student-name') ? $('custom-student-name').value.trim() : '';
             const where = agencyCity ? ` (${agencyCity})` : '';
 
             $('header-agency-badge').textContent = $('custom-agency-name').value.trim()
@@ -4087,6 +4087,7 @@
 
         // Texte de la démo, calculé sur le cas par défaut
         function updatePitchDemoText() {
+            if (!$('pitch-demo-text')) return; // version entreprise : pas de pitch
             const inp = readInputs();
             inp.useLemoine = false;
             const before = compute(inp).debtRatio;
@@ -4181,7 +4182,7 @@
                     const parsed = JSON.parse(saved);
                     if (parsed.agencyName) $('custom-agency-name').value = parsed.agencyName;
                     if (parsed.agencyCity) $('custom-agency-city').value = parsed.agencyCity;
-                    if (parsed.studentName) $('custom-student-name').value = parsed.studentName;
+                    if (parsed.studentName && $('custom-student-name')) $('custom-student-name').value = parsed.studentName;
                     if (parsed.theme) state.theme = parsed.theme;
                 }
             } catch (e) {}
